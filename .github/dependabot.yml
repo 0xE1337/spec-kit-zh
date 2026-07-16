@@ -1,9 +1,12 @@
 updates:
 - directory: /
   package-ecosystem: pip
+  # 中文镜像仓库：不接受 Dependabot PR，依赖更新随上游合并进来
+  open-pull-requests-limit: 0
   schedule:
     interval: weekly
 - directory: /
+  open-pull-requests-limit: 0
   ignore:
   - dependency-name: "github/gh-aw-actions/**"
   - dependency-name: "github/gh-aw-actions" # Managed by gh aw compile. Version-locked to the gh-aw compiler; do not bump.
