@@ -1,3 +1,5 @@
+> 🇨🇳 **中文版 → [README.zh.md](README.zh.md)** ｜ 本仓库是 [github/spec-kit](https://github.com/github/spec-kit) 的中文学习版，全量翻译并持续跟随官方版本。翻译说明见 [TRANSLATION.md](TRANSLATION.md)。
+
 <div align="center">
     <img src="./media/logo_large.webp" alt="Spec Kit Logo" width="200" height="200"/>
     <h1>🌱 Spec Kit</h1>
