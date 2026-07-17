@@ -133,3 +133,36 @@
 | fail-closed / secure-by-default | 故障即拒绝（fail-closed）/ 默认安全（secure-by-default） |
 | authentication | 认证 |
 | PAT / service principal / tenant | PAT（个人访问令牌）/ 服务主体 / 租户 |
+
+## 二期新增术语（2026-07-17 校审回填：extensions/ 与 presets/）
+
+| English | 中文 |
+| --- | --- |
+| manifest / declarative manifest | 清单 / 声明式清单（每文件首次出现注 manifest） |
+| registry（`.registry` 文件） | 注册表 |
+| hook point / lifecycle events | 钩子挂载点 / 生命周期事件 |
+| curated catalog / curate | 策展目录源 / 策展 |
+| discovery-only / install-allowed | 仅发现（discovery-only）/ 保留英文 install-allowed |
+| dual catalog system | 双目录源体系 |
+| trust boundary / trust model | 信任边界 / 信任模型 |
+| sandboxing | 沙箱 |
+| atomic rollback | 原子回滚 |
+| opt-in | 按需启用（opt-in）【全库统一，不用"可选启用/主动选用"】 |
+| version specifier | 版本说明符（与"版本约束"constraint 区分） |
+| namespaced command / alias | 带命名空间的命令 / 别名 |
+| authoring order / last wins | 书写顺序 / "后者胜出"（last wins） |
+| graceful degradation | 优雅降级 |
+| triage | 分诊（triage，首次注音） |
+| slug | 保留英文 slug（首次出现注"短标识名"） |
+| verdict | 判定（valid/invalid 等枚举值保留英文） |
+| reproduction | 复现 |
+| managed section | 受管区块（managed section，首次注音） |
+| feature branch / sanitized | 功能分支 / 净化（处理） |
+| semantic versioning | 语义化版本 |
+| orphan files / dot notation | 孤儿文件 / 点分记法 |
+| User Input（命令章节标题） | 用户输入 |
+| bundled preset | 随 Spec Kit 内置的预设（避免与 bundle=套装 冲突） |
+| upsert / kebab-case | 保留英文 |
+| Schema（标题中） | 保留英文（如"配置 Schema"） |
+
+二期补充纪律：被测试代码字面断言的标记（如 `<!-- preset:self-test -->`、`preset:self-test wrap-pre/wrap-post`）及其所在正文一律保留英文——翻译前先查 tests/ 是否有字面比对；面向上游英文仓库提交的内容（PR 检查清单、commit 消息示例）保留英文并加"提交上游请用英文"提示；ASCII 框图保留英文（中文全角字符破坏对齐）。

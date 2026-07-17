@@ -1,0 +1,26 @@
+<!-- zh-source: presets/self-test/templates/spec-template.md -->
+<!-- zh-base: 69ee7a8 -->
+
+# 功能规范（自测预设）
+
+<!-- preset:self-test -->
+
+> 本模板由 self-test 预设提供。
+
+## 概述
+
+功能的简要描述。
+
+## 需求
+
+- 需求 1
+- 需求 2
+
+## 设计
+
+描述设计方案。
+
+## 验收标准
+
+- [ ] 标准 1
+- [ ] 标准 2
