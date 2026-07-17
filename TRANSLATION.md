@@ -46,8 +46,8 @@ tools/zh/translate.sh <过期文件的英文源>   # 增量重翻
 
 ## 翻译范围（按优先级）
 
-1. ✅ 一期：`README.md`、`spec-driven.md`（方法论）、`docs/`、`templates/`、`memory/`
-2. 🔶 二期：`extensions/`、`presets/` 的说明文档
+1. ✅ 一期（已完成）：`README.md`、`spec-driven.md`（方法论）、`docs/`、`templates/`
+2. ✅ 二期（已完成）：`extensions/`、`presets/` 全量（含内置扩展与示例预设）
 3. ❌ 不翻：`src/`、`tests/`、newsletters、CHANGELOG、CODE_OF_CONDUCT、`.github/` 内部文件
 
 ## 术语
