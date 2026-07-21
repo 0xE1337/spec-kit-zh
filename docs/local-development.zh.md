@@ -1,5 +1,5 @@
 <!-- zh-source: docs/local-development.md -->
-<!-- zh-base: 9cd20c6 -->
+<!-- zh-base: ec45dbd -->
 
 # 本地开发指南
 
@@ -118,10 +118,10 @@ specify integration scaffold my-agent --type skills
 
 ## 7. 运行 Lint / 基础检查
 
-CI 会强制执行 `ruff check src/`（见 `.github/workflows/test.yml`），所以推送前先在本地运行：
+CI 会强制执行 `ruff check src tests`（见 `.github/workflows/test.yml`），所以推送前先在本地运行：
 
 ```bash
-uvx ruff check src/
+uvx ruff check src tests
 ```
 
 也可以快速检查一下可导入性：

@@ -166,5 +166,8 @@
 | Schema（标题中） | 保留英文（如"配置 Schema"） |
 | stakeholder | 利益相关者（全库统一，不用"干系人"） |
 | assess pipeline: intake / research / shape / define / decide | 接收 / 调研 / 塑形 / 定义 / 决策 |
+| overlay / workflow overlay | 覆盖层（首次出现附 overlay） |
+| base workflow / edit operations / anchor | 基础工作流 / 编辑操作 / 锚点步骤（作 YAML 字段时保留 anchor） |
+| gate（workflows.zh 全文） | 保留英文 gate（该文件已定稿一律用"gate 步骤"，勿改"关卡"以免术语漂移） |
 
 二期补充纪律：被测试代码字面断言的标记（如 `<!-- preset:self-test -->`、`preset:self-test wrap-pre/wrap-post`）及其所在正文一律保留英文——翻译前先查 tests/ 是否有字面比对；面向上游英文仓库提交的内容（PR 检查清单、commit 消息示例）保留英文并加"提交上游请用英文"提示；ASCII 框图保留英文（中文全角字符破坏对齐）。

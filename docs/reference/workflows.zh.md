@@ -1,5 +1,5 @@
 <!-- zh-source: docs/reference/workflows.md -->
-<!-- zh-base: 6688b44 -->
+<!-- zh-base: d6fa046 -->
 
 # 工作流
 
@@ -94,8 +94,192 @@ specify workflow add <source>
 | `--dev`         | 从本地工作流 YAML 文件或目录安装 |
 | `--from <url>`  | 从自定义 URL 安装（`<source>` 用来指定期望的工作流 ID） |
 
-从目录源、URL（必须是 HTTPS）或本地文件路径安装工作流。
+从目录源、URL（必须是 HTTPS）、本地 YAML 文件，或包含 workflow.yml 的本地目录安装工作流。
 
+## 工作流覆盖层
+
+工作流覆盖层（overlay）让项目在不改动已安装的 `workflow.yml` 的前提下，扩展或覆盖一个已安装的工作流。这样，本地定制在 `specify bundle update` 或 `specify workflow add` 升级后依然安然无恙。
+
+当 `specify workflow run <workflow-id>` 加载工作流时，引擎会把基础工作流与该工作流 id 的所有已启用覆盖层组合在一起。组合结果会像任何其他工作流定义一样接受校验。
+
+### 覆盖层的工作方式
+
+覆盖层是一个 YAML 文件，它针对某个基础工作流的步骤列表声明一组编辑操作。覆盖层采用"数值越小优先级越高"的规则：优先级数字大的先应用，数字小的后应用。优先级相同的覆盖层按 ID 的字母顺序应用，字母序最靠后的 ID 在冲突中胜出。
+
+项目覆盖层文件位于：
+
+| 位置 | 用途 |
+| --- | --- |
+| `.specify/workflows/overlays/<id>/*.yml` | 项目本地定制 |
+
+### 覆盖层文件格式
+
+推荐的编辑写法是：用操作名作为键，用锚点步骤的 id 作为值：
+
+```yaml
+id: "my-overlay"
+extends: "speckit"
+priority: 10
+enabled: true
+edits:
+  - insert_after: implement
+    step:
+      id: run-lint
+      type: shell
+      run: "ruff check src/"
+
+  - replace: review-spec
+    step:
+      id: review-spec
+      type: gate
+      message: "Review the generated spec (overlay override)."
+      options: [approve, reject]
+      on_reject: abort
+```
+
+也支持显式写法：
+
+```yaml
+edits:
+  - operation: insert_after
+    anchor: implement
+    step:
+      id: run-lint
+      type: shell
+      run: "ruff check src/"
+```
+
+#### 字段
+
+| 字段 | 必填 | 说明 |
+| --- | --- | --- |
+| `id` | 是 | 此覆盖层的标识符。用于 `specify workflow overlay *` 命令。只能包含小写字母、数字和连字符；不能含点号、下划线、路径分隔符，也不能是 `overlays`。 |
+| `extends` | 是 | 此覆盖层要应用到的工作流 id。使用与 `id` 相同的安全 id 格式；`overlays`、`runs`、`steps` 为保留字。 |
+| `priority` | 否 | 整数；默认为 `10`。数值越小优先级越高，并在冲突中胜出。缺失或非法的值会回退为 `10`。 |
+| `enabled` | 否 | 布尔值。默认为 `true`。被禁用的覆盖层会被忽略。 |
+| `edits` | 是 | 编辑操作的列表，不能为空。 |
+
+#### 编辑操作
+
+| 操作 | 是否需要 `step` | 效果 |
+| --- | --- | --- |
+| `insert_after` | 是 | 在锚点步骤之后紧接着插入 `step`。 |
+| `insert_before` | 是 | 在锚点步骤之前紧接着插入 `step`。 |
+| `replace` | 是 | 用 `step` 替换锚点步骤。 |
+| `remove` | 否 | 从列表中移除锚点步骤。 |
+
+`anchor` 是基础工作流中某个步骤的 `id`。anchor 会在 `then`、`else`、`steps`、`cases.*` 和 `default` 块内递归解析，因此嵌套的基础步骤也可以作为目标。fan-out 模板（`fan-out` 步骤内部的 `step`）**不能**用作 anchor。
+
+步骤 id 不能包含 `:`——该字符保留给引擎生成的嵌套 id 使用。
+
+### 覆盖层 CLI 命令
+
+#### 添加项目覆盖层
+
+```bash
+specify workflow overlay add <path-to-overlay.yml> --priority <n>
+```
+
+校验覆盖层文件，并把它复制到 `.specify/workflows/overlays/<extends>/<id>.yml`。`--priority` 默认为 `10`，会覆盖文件中的 `priority` 字段。
+
+#### 列出覆盖层
+
+```bash
+specify workflow overlay list <workflow-id>
+```
+
+显示该工作流的所有覆盖层，按解析器的优先级顺序排列。被禁用的覆盖层在列表中会标注为已禁用，并在工作流解析时被忽略。
+
+#### 修改优先级
+
+```bash
+specify workflow overlay set-priority <workflow-id> <overlay-id> <n>
+```
+
+#### 启用或禁用
+
+```bash
+specify workflow overlay disable <workflow-id> <overlay-id>
+specify workflow overlay enable <workflow-id> <overlay-id>
+```
+
+#### 移除
+
+```bash
+specify workflow overlay remove <workflow-id> <overlay-id>
+```
+
+移除项目覆盖层文件。
+
+#### 查看组合后的工作流
+
+```bash
+specify workflow resolve <workflow-id>
+```
+
+打印层级栈（基础工作流 + 覆盖层），以及组合后每个步骤的来源归属。用于调试某个步骤是由哪个覆盖层贡献或覆盖的。
+
+### 示例：在实现之后添加自动化 lint 检查
+
+以内置的 `speckit` 工作流为例，创建 `project-overlay.yml`：
+
+```yaml
+id: "add-lint"
+extends: "speckit"
+priority: 10
+edits:
+  - insert_after: implement
+    step:
+      id: run-lint
+      type: shell
+      run: "ruff check src/"
+```
+
+安装它：
+
+```bash
+specify workflow overlay add project-overlay.yml --priority 10
+```
+
+运行工作流：
+
+```bash
+specify workflow run speckit -i spec="构建一个看板应用"
+```
+
+组合后的工作流现在会运行完整的 SDD 循环，并在 `implement` 步骤之后自动执行 `ruff check src/`。
+
+### 示例：替换一个 gate 步骤
+
+```yaml
+id: "skip-plan-review"
+extends: "speckit"
+priority: 5
+edits:
+  - replace: review-plan
+    step:
+      id: review-plan
+      type: command
+      command: speckit.plan
+      input:
+        args: "{{ inputs.spec }}"
+```
+
+优先级数值越小，优先级越高。如果这个覆盖层必须在与上面 `add-lint` 覆盖层的冲突中胜出，就把它改成 `priority: 5`。它把 `review-plan` 这个 gate 替换成一个非交互式命令。
+
+### 与套装和更新的交互
+
+`specify workflow add <local-directory>` 会把本地目录中的 `workflow.yml` 安装到 `.specify/workflows/<id>/`。
+
+当已安装的工作流被刷新或重新安装时，`.specify/workflows/overlays/<id>/` 中的项目覆盖层会被保留，因为它们位于已安装的工作流目录之外。
+
+### 局限
+
+- 覆盖层只作用于步骤列表。它们无法更改工作流的元数据（name、description、inputs、`requires`）或表达式逻辑。
+- fan-out 模板不能用作 anchor。
+- 如果某个覆盖层的目标是基础工作流中并不存在的步骤 id，工作流解析时会抛出校验错误。
+- 覆盖层不能以其他覆盖层添加的步骤为目标。
+- 覆盖层不能新增输入，也不能更改基础工作流的输入 schema。
 ## 更新工作流
 
 ```bash
