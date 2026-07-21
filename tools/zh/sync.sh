@@ -81,19 +81,28 @@ if [[ "$DRY" == "--dry" ]]; then
   exit 0
 fi
 
-# 6. 逐个翻译（过期→增量补丁，新增→全量），失败不中断整体
+# 6. 逐个翻译（过期→增量补丁，新增→全量），失败不中断整体；错误输出留进日志
 DONE_STALE=(); DONE_NEW=(); FAILED=()
 for f in "${STALE[@]:-}"; do
   [[ -z "$f" ]] && continue
-  if ./tools/zh/translate-patch.sh "$f" >/dev/null 2>&1; then DONE_STALE+=("$f"); else FAILED+=("$f (patch)"); fi
+  if out="$(./tools/zh/translate-patch.sh "$f" 2>&1)"; then DONE_STALE+=("$f"); else FAILED+=("$f (patch)"); log "补丁失败 $f: $out"; fi
 done
 for f in "${NEWFILES[@]:-}"; do
   [[ -z "$f" ]] && continue
-  if ./tools/zh/translate.sh "$f" >/dev/null 2>&1; then DONE_NEW+=("${f%.md}.zh.md"); else FAILED+=("$f (new)"); fi
+  if out="$(./tools/zh/translate.sh "$f" 2>&1)"; then DONE_NEW+=("${f%.md}.zh.md"); else FAILED+=("$f (new)"); log "翻译失败 $f: $out"; fi
 done
 
-# 7. 提交、推送、开 PR
+# 7. 提交、推送、开 PR。若翻译全部失败（无译文改动），优雅收场并开 issue，不留悬空分支
 git add -A
+if git diff --cached --quiet; then
+  log "所有翻译均失败，无改动可提交（失败 ${#FAILED[@]}）。切回 main、清理分支、开 issue。"
+  git switch main >/dev/null 2>&1
+  git branch -D "$BRANCH" >/dev/null 2>&1
+  gh issue create --title "自动同步：$NEWTAG 翻译失败需人工处理" \
+    --body "sync.sh 检测到 ${#STALE[@]} 过期 / ${#NEWFILES[@]} 新增，但翻译全部失败：$(printf '%s; ' "${FAILED[@]:-}")见 tools/zh/sync.log。" \
+    2>/dev/null || true
+  exit 1
+fi
 git commit -q -m "chore(sync): 同步官方 $NEWTAG（AI 初翻，待审校）
 
 过期修补 ${#DONE_STALE[@]} · 新增翻译 ${#DONE_NEW[@]}$( [[ ${#FAILED[@]} -gt 0 ]] && echo " · 失败 ${#FAILED[@]}" )"
