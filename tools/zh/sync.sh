@@ -93,16 +93,32 @@ for f in "${NEWFILES[@]:-}"; do
   if out="$(./tools/zh/translate.sh "$f" 2>&1)"; then DONE_NEW+=("${f%.md}.zh.md"); else FAILED+=("$f (new)"); log "翻译失败 $f: $out"; fi
 done
 
-# 7. 提交、推送、开 PR。若翻译全部失败（无译文改动），优雅收场并开 issue，不留悬空分支
+# 7. 提交、推送、开 PR。若无译文改动（如 claude 无法认证），优雅降级为「检测通知」：
+#    切回 main、清理分支、开一个列出待翻文件的 issue 提醒人工处理。这不是错误，是有效结果。
 git add -A
 if git diff --cached --quiet; then
-  log "所有翻译均失败，无改动可提交（失败 ${#FAILED[@]}）。切回 main、清理分支、开 issue。"
+  log "无译文改动（很可能 claude 无法认证）。降级为检测通知：切回 main、清理分支、开提醒 issue。"
   git switch main >/dev/null 2>&1
   git branch -D "$BRANCH" >/dev/null 2>&1
-  gh issue create -R "$SLUG" --title "自动同步：$NEWTAG 翻译失败需人工处理" \
-    --body "sync.sh 检测到 ${#STALE[@]} 过期 / ${#NEWFILES[@]} 新增，但翻译全部失败：$(printf '%s; ' "${FAILED[@]:-}")见 tools/zh/sync.log。" \
-    2>/dev/null || true
-  exit 1
+  STALE_LIST="$( [[ ${#STALE[@]} -eq 0 ]] && echo "（无）" || printf -- '- %s\n' "${STALE[@]}" )"
+  NEW_LIST="$( [[ ${#NEWFILES[@]} -eq 0 ]] && echo "（无）" || printf -- '- %s\n' "${NEWFILES[@]}" )"
+  # 同一版本已有提醒 issue 就不重复开
+  EXIST="$(gh issue list -R "$SLUG" --state open --search "同步待处理：$NEWTAG in:title" --json number --jq '.[0].number' 2>/dev/null || true)"
+  if [[ -z "$EXIST" ]]; then
+    gh issue create -R "$SLUG" --title "同步待处理：官方更新到 $NEWTAG" --body "$(cat <<EOF
+官方 spec-kit 已更新到 **$NEWTAG**（领先 $AHEAD 个 commit）。自动翻译未产出译文（通常是无人值守环境下 \`claude\` 无法认证），需人工翻译以下文件后合并。
+
+## 过期待更新（${#STALE[@]}）
+$STALE_LIST
+
+## 新增待翻译（${#NEWFILES[@]}）
+$NEW_LIST
+
+处理方式：本地运行 \`tools/zh/sync.sh\`（交互式 claude 已登录时），或让 Claude Code 会话按术语表翻译这些文件。
+EOF
+)" 2>/dev/null || true
+  fi
+  exit 0
 fi
 git commit -q -m "chore(sync): 同步官方 $NEWTAG（AI 初翻，待审校）
 
