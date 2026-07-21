@@ -1634,6 +1634,18 @@ class TestPresetCatalog:
         with pytest.raises(PresetValidationError, match="valid URL with a host"):
             catalog._validate_catalog_url(url)
 
+    def test_validate_catalog_url_malformed_rejected(self, project_dir):
+        """A malformed URL raises PresetValidationError, not a raw ValueError.
+
+        ``urlparse('https://[::1').hostname`` raises ``ValueError: Invalid IPv6
+        URL`` (unterminated bracket). Without wrapping, that leaks past callers'
+        ``except PresetValidationError`` guards and crashes the CLI. Mirrors the
+        shared ``CatalogStackBase`` (#3435) and ``IntegrationCatalog`` behaviour.
+        """
+        catalog = PresetCatalog(project_dir)
+        with pytest.raises(PresetValidationError, match="malformed"):
+            catalog._validate_catalog_url("https://[::1")
+
     def test_env_var_catalog_url(self, project_dir, monkeypatch):
         """Test catalog URL from environment variable."""
         monkeypatch.setenv("SPECKIT_PRESET_CATALOG_URL", "https://custom.example.com/catalog.json")
@@ -2651,6 +2663,24 @@ class TestPresetCatalogMultiCatalog:
                     "name": "bool-priority",
                     "url": "https://example.com/catalog.json",
                     "priority": True,
+                }
+            ]
+        }))
+
+        catalog = PresetCatalog(project_dir)
+        with pytest.raises(PresetValidationError, match="Invalid priority|expected integer"):
+            catalog._load_catalog_config(config_path)
+
+    def test_load_catalog_config_rejects_infinite_priority(self, project_dir):
+        """A ``priority: .inf`` yields a clean validation error, not an uncaught
+        OverflowError from int(float('inf'))."""
+        config_path = project_dir / ".specify" / "preset-catalogs.yml"
+        config_path.write_text(yaml.dump({
+            "catalogs": [
+                {
+                    "name": "inf-priority",
+                    "url": "https://example.com/catalog.json",
+                    "priority": float("inf"),
                 }
             ]
         }))

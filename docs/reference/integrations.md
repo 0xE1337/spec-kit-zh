@@ -1,6 +1,6 @@
 # Supported AI Coding Agent Integrations
 
-The Specify CLI supports a wide range of AI coding agents. When you run `specify init`, the CLI sets up the appropriate command files, context rules, and directory structures for your chosen AI coding agent — so you can start using Spec-Driven Development immediately, regardless of which tool you prefer.
+The Specify CLI supports a wide range of AI coding agents. When you run `specify init`, the CLI sets up the appropriate command files and directory structures for your chosen AI coding agent — so you can start using Spec-Driven Development immediately, regardless of which tool you prefer.
 
 ## Supported AI Coding Agents
 
@@ -48,7 +48,11 @@ The Specify CLI supports a wide range of AI coding agents. When you run `specify
 specify integration list
 ```
 
-Shows all available integrations, which one is currently installed, and whether each requires a CLI tool or is IDE-based.
+| Option      | Description                                                                                                             |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `--catalog` | Also browse the catalog (built-in **and** community). Community integrations that are not built in are only shown here.  |
+
+Shows the built-in integrations, which one is currently installed, and whether each requires a CLI tool or is IDE-based.
 When multiple integrations are installed, the list marks the default integration separately from the other installed integrations.
 The list also shows whether each built-in integration is declared multi-install safe.
 

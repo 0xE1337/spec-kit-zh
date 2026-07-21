@@ -2074,8 +2074,12 @@ class PresetCatalog:
         """
         from urllib.parse import urlparse
 
-        parsed = urlparse(url)
-        is_localhost = parsed.hostname in ("localhost", "127.0.0.1", "::1")
+        try:
+            parsed = urlparse(url)
+            hostname = parsed.hostname
+        except ValueError:
+            raise PresetValidationError(f"Catalog URL is malformed: {url}") from None
+        is_localhost = hostname in ("localhost", "127.0.0.1", "::1")
         if parsed.scheme != "https" and not (
             parsed.scheme == "http" and is_localhost
         ):
@@ -2086,7 +2090,7 @@ class PresetCatalog:
         # Check hostname, not netloc: netloc is truthy for host-less URLs like
         # "https://:8080" or "https://user@", so the host guarantee this error
         # promises would not actually hold. hostname is None in those cases (#3209).
-        if not parsed.hostname:
+        if not hostname:
             raise PresetValidationError(
                 "Catalog URL must be a valid URL with a host."
             )
@@ -2231,7 +2235,10 @@ class PresetCatalog:
                 )
             try:
                 priority = int(raw_priority)
-            except (TypeError, ValueError):
+            except (TypeError, ValueError, OverflowError):
+                # OverflowError: int(float("inf")) — a YAML ``priority: .inf``
+                # would otherwise escape as an uncaught traceback instead of the
+                # clean validation error (mirrors catalogs.py).
                 raise PresetValidationError(
                     f"Invalid priority for catalog '{item.get('name', idx + 1)}': "
                     f"expected integer, got {raw_priority!r}"
