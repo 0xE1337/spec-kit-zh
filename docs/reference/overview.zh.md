@@ -1,9 +1,9 @@
 <!-- zh-source: docs/reference/overview.md -->
-<!-- zh-base: 487af97 -->
+<!-- zh-base: 396fc2c -->
 
-# CLI 参考
+# 参考
 
-Specify CLI（`specify`）管理规范驱动开发的完整生命周期——从项目初始化到工作流自动化。
+Specify CLI（`specify`）管理规范驱动开发的完整生命周期——从项目初始化到工作流自动化。本节是 CLI 命令与基础组件的详细参考，还涵盖你的编码智能体运行的 `/speckit.*` 智能体化流程。
 
 ## 核心命令
 
@@ -13,7 +13,7 @@ Specify CLI（`specify`）管理规范驱动开发的完整生命周期——从
 
 ## 集成
 
-集成把 Spec Kit 连接到你的 AI 编码智能体。每个集成会为特定智能体配置对应的命令文件、上下文规则和目录结构。每个项目同一时间只有一个集成处于活跃状态，你可以随时在集成之间切换。
+集成把 Spec Kit 连接到你的 AI 编码智能体。每个集成会为特定智能体配置对应的命令文件和目录结构。每个项目同一时间只有一个集成处于活跃状态，你可以随时在集成之间切换。
 
 [集成参考 →](integrations.md)
 
@@ -40,3 +40,19 @@ Specify CLI（`specify`）管理规范驱动开发的完整生命周期——从
 套装把现有的扩展、预设、工作流和步骤组合成一个带版本、可安装的整体单元。套装不添加新行为，而是精选一组基础组件——一个团队或角色所需的一切——并通过每个组件自己的机制一步完成安装，附带版本固定、冲突检查和来源追踪，保证干净的更新与移除。
 
 [套装参考 →](bundles.md)
+
+## 智能体化命令
+
+上面各节讲的是由 `specify` CLI 管理的基础组件。下面则是你的编码智能体在编辑器内逐步运行的 `/speckit.*` 斜杠命令——构建在这一基础之上的智能体化流程。
+
+### 智能体化 SDD
+
+驱动核心规范驱动开发过程、由你的编码智能体逐步运行的 `/speckit.*` 斜杠命令：constitution、specify、clarify、plan、checklist、tasks、analyze、implement 和 converge。按顺序运行它们，对任何存在实质性歧义的地方，加上 clarify/checklist/analyze 质量关卡。
+
+[智能体化 SDD 参考 →](agentic-sdd.md)
+
+### 智能体化 Bug 修复
+
+随 Spec Kit 内置的 **bug** 扩展增加了一套三步式 bug 分诊（triage）流程——评估、修复与验证——每个 bug 都追踪在 `.specify/bugs/` 下各自的目录里。用 `specify extension add bug` 安装它。
+
+[智能体化 Bug 修复参考 →](agentic-bugfix.md)

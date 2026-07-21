@@ -40,8 +40,14 @@ while IFS= read -r zh; do
     fresh=$((fresh + 1))
   else
     n="$(git rev-list --count "$base..$REF" -- "$src" 2>/dev/null || echo '?')"
-    echo "🔴 过期: $zh  ($base → $cur, 原文有 $n 次新改动)"
-    stale=$((stale + 1))
+    # 哈希不同但基准之后对该源文件无任何新改动 = 内容已同步（常见于我们也改过的
+    # 文件在合并官方后产生的合并 commit，其哈希天然不同于 upstream 上的哈希）
+    if [[ "$n" == "0" ]]; then
+      fresh=$((fresh + 1))
+    else
+      echo "🔴 过期: $zh  ($base → $cur, 原文有 $n 次新改动)"
+      stale=$((stale + 1))
+    fi
   fi
 done < <(find . -name '*.zh.md' -not -path './.git/*' | sort)
 

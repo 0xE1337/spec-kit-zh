@@ -1,5 +1,5 @@
 <!-- zh-source: docs/community/presets.md -->
-<!-- zh-base: 99a3b7c -->
+<!-- zh-base: a5b0bb3 -->
 
 # 社区预设
 
@@ -14,7 +14,7 @@
 | Agent Parity Governance | 在项目声明的各个 AI 智能体指令面上，添加共享指引一致性、可供审计的 Spec Kit 运行证据，以及与智能体无关的模型路由指引，防止智能体指引发生漂移。 | 6 个模板、3 个命令 | — | [spec-kit-preset-agent-parity-governance](https://github.com/hindermath/spec-kit-preset-agent-parity-governance) |
 | AIDE In-Place Migration | 把 AIDE 扩展的工作流适配为原地技术迁移（X → Y 模式）——添加迁移目标、验证关卡、知识文档和行为等价性标准 | 2 个模板、8 个命令 | AIDE 扩展 | [spec-kit-presets](https://github.com/mnriem/spec-kit-presets) |
 | Architecture Governance | 添加安全软件架构、STRIDE+CAPEC 威胁建模、arc42 安全横切概念、S-ADR、零信任适用性、OWASP SAMM 治理、BSI C3A 云自主性、BSI C5 云合规保障，以及可供审计的 Spec Kit 运行证据 | 13 个模板、3 个命令 | — | [spec-kit-preset-architecture-governance](https://github.com/hindermath/spec-kit-preset-architecture-governance) |
-| Autonomous Run Governance | 为 Spec Kit 的自主交付、收敛、续跑、收尾和回顾学习添加权限受限、证据优先的治理。 | 12 个模板、2 个命令、2 个脚本 | — | [spec-kit-preset-autonomous-run-governance](https://github.com/hindermath/spec-kit-preset-autonomous-run-governance) |
+| Autonomous Run Governance | 为 Spec Kit 的自主交付添加权限受限、证据优先的治理，涵盖经校验的状态、停止、续跑、精确 HEAD 证明、收尾和学习者指引。 | 13 个模板、5 个命令、4 个脚本 | — | [spec-kit-preset-autonomous-run-governance](https://github.com/hindermath/spec-kit-preset-autonomous-run-governance) |
 | Canon Core | 调整原版 Spec Kit 工作流，使其与 Canon 扩展协同工作 | 2 个模板、8 个命令 | — | [spec-kit-canon](https://github.com/maximiliamus/spec-kit-canon) |
 | Claude AskUserQuestion | 把 Claude Code 上的 `/speckit.clarify` 和 `/speckit.checklist` 从 Markdown 表格式提问升级为原生的 AskUserQuestion 选择器，每个问题都带有推荐选项和理由 | 2 个命令 | — | [spec-kit-preset-claude-ask-questions](https://github.com/0xrafasec/spec-kit-preset-claude-ask-questions) |
 | Command Density | 压缩九个核心 Spec Kit 命令提示词，同时保留脚本、交接、占位符、钩子输出块和规则结构 | 9 个命令 | — | [spec-kit-preset-command-density](https://github.com/Xopoko/spec-kit-preset-command-density) |

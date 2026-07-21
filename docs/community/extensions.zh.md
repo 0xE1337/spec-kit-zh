@@ -1,5 +1,5 @@
 <!-- zh-source: docs/community/extensions.md -->
-<!-- zh-base: c40db8a -->
+<!-- zh-base: b17c70d -->
 
 # 社区扩展
 
@@ -92,6 +92,7 @@
 | Multi-Repo Branch Sync | 通过 plan/tasks 钩子，在受影响的子仓库和 git 子模块中创建功能分支 | `process` | Read+Write | [multi-repo-sync](https://github.com/fyloss/spec-kit-multi-repo-sync) |
 | Multi-Sites Spec Kit | 感知多站点的 specify 命令，支持按站点划分的规范文件夹、自动递增编号和 Drupal | `process` | Read+Write | [spec-kit-multi-sites](https://github.com/teeyo/spec-kit-multi-sites) |
 | .NET Framework to Modern .NET Migration | 编排端到端的 .NET Framework 到现代 .NET 迁移，共 7 个阶段，并与规范驱动开发生命周期集成 | `process` | Read+Write | [spec-kit-fx-to-net](https://github.com/RogerBestMsft/spec-kit-FxToNet) |
+| OKF Knowledge Bundle Generator | 从源代码仓库生成并维护开放知识格式（Open Knowledge Format，OKF v0.1）知识包 | `docs` | Read+Write | [speckit_ofk](https://github.com/alexcpn/speckit_ofk) |
 | Onboard | 为 spec-kit 项目新人提供情境化入门与渐进式成长。讲解规范、梳理依赖、验证理解，并指引下一步 | `process` | Read+Write | [spec-kit-onboard](https://github.com/dmux/spec-kit-onboard) |
 | Optimize | 审计并优化 AI 治理的上下文效率——token 预算、规则健康度、可解释性、压缩、连贯性和回声检测 | `process` | Read+Write | [spec-kit-optimize](https://github.com/sakitA/spec-kit-optimize) |
 | Orchestration Task Context Management | 为生成的 Spec Kit 任务文件添加子智能体工作单元编排 | `process` | Read+Write | [spec-kit-orchestration-task-context-management](https://github.com/benizzio/spec-kit-orchestration-task-context-management) |

@@ -1,5 +1,5 @@
 <!-- zh-source: extensions/EXTENSION-DEVELOPMENT-GUIDE.md -->
-<!-- zh-base: 4ec4635 -->
+<!-- zh-base: 309166e -->
 
 # 扩展开发指南
 
@@ -16,7 +16,7 @@ mkdir my-extension
 cd my-extension
 ```
 
-### 2. 创建 `extension.yml` 清单
+### 2. 创建 `extension.yml` 清单（manifest）
 
 ```yaml
 schema_version: "1.0"
@@ -690,7 +690,7 @@ hooks:
 
 **错误**：`Extension requires spec-kit >=0.2.0`
 
-- **修复**：用 `uv tool install specify-cli --force --from git+https://github.com/github/spec-kit.git` 更新 spec-kit。PyPI 上单独的 `specify-cli` 包是另一个不相关的项目——不带 `--from git+...` 安装会得到一个空壳 CLI，其中不包含 `extension`、`preset` 等 spec-kit 命令。
+- **修复**：参照[升级指南](../docs/upgrade.md)升级 Spec Kit。`uv tool install specify-cli --force --from git+https://github.com/github/spec-kit.git` 仍可作为源码安装的备用方式。如果你从 PyPI 安装并希望继续沿用该方式，请参照 [PyPI 升级指引](../docs/install/pypi.md#upgrade)。
 
 **错误**：`Command file not found`
 
