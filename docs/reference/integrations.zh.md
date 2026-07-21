@@ -1,5 +1,5 @@
 <!-- zh-source: docs/reference/integrations.md -->
-<!-- zh-base: 2df0394 -->
+<!-- zh-base: 74662cf -->
 
 # 支持的 AI 编码智能体集成
 
@@ -25,7 +25,7 @@ Specify CLI 支持范围广泛的 AI 编码智能体。运行 `specify init` 时
 | [Goose](https://goose-docs.ai/) | `goose` | 使用 `.goose/recipes/` 下的 YAML recipe 格式 |
 | [Grok Build](https://docs.x.ai/build/overview) | `grok` | 基于技能的集成；技能安装到 `.grok/skills`，以 `/speckit-<command>` 方式调用 |
 | [Hermes](https://github.com/NousResearch/hermes-agent) | `hermes` | 基于技能的集成；技能全局安装到 `~/.hermes/skills/` |
-| [IBM Bob](https://www.ibm.com/products/bob) | `bob` | 基于 IDE 的智能体 |
+| [IBM Bob](https://www.ibm.com/products/bob) | `bob` | 默认基于技能的集成；在 `.bob/skills/` 下以 `speckit-<command>/SKILL.md` 形式安装技能，并以 `/speckit-<command>` 调用。传入 `--integration-options="--legacy-commands"` 可改为生成已弃用的 Bob 1.x 布局（`.bob/commands/*.md`）；该标志将在未来版本中移除。已有的旧版安装可用 `specify integration upgrade bob --integration-options="--skills"` 迁移，它会转换为技能布局并删除旧的命令文件。如果安装了预设覆盖，迁移会被拒绝并给出可操作的报错（预设产物目前尚无法在布局变更间对账）——请先移除预设、迁移，再重新安装它们。 |
 | [Junie](https://junie.jetbrains.com/) | `junie` | |
 | [Kilo Code](https://github.com/Kilo-Org/kilocode) | `kilocode` | |
 | [Kimi Code](https://code.kimi.com/) | `kimi` | 基于技能的集成；安装到 `.kimi-code/skills/`。`--migrate-legacy` 会把旧的 `.kimi/skills/` 安装迁移到新路径 |

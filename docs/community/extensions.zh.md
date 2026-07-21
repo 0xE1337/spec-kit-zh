@@ -1,5 +1,5 @@
 <!-- zh-source: docs/community/extensions.md -->
-<!-- zh-base: b17c70d -->
+<!-- zh-base: 7f97f1f -->
 
 # 社区扩展
 
@@ -92,7 +92,7 @@
 | Multi-Repo Branch Sync | 通过 plan/tasks 钩子，在受影响的子仓库和 git 子模块中创建功能分支 | `process` | Read+Write | [multi-repo-sync](https://github.com/fyloss/spec-kit-multi-repo-sync) |
 | Multi-Sites Spec Kit | 感知多站点的 specify 命令，支持按站点划分的规范文件夹、自动递增编号和 Drupal | `process` | Read+Write | [spec-kit-multi-sites](https://github.com/teeyo/spec-kit-multi-sites) |
 | .NET Framework to Modern .NET Migration | 编排端到端的 .NET Framework 到现代 .NET 迁移，共 7 个阶段，并与规范驱动开发生命周期集成 | `process` | Read+Write | [spec-kit-fx-to-net](https://github.com/RogerBestMsft/spec-kit-FxToNet) |
-| OKF Knowledge Bundle Generator | 从源代码仓库生成并维护开放知识格式（Open Knowledge Format，OKF v0.1）知识包 | `docs` | Read+Write | [speckit_ofk](https://github.com/alexcpn/speckit_ofk) |
+| OKF Knowledge Bundle Generator | 从源代码仓库生成并维护开放知识格式（Open Knowledge Format，OKF v0.1）知识包，挖掘 git 历史提取重要性与设计缘由，并与用户一起厘清悬而未决的问题 | `docs` | Read+Write | [speckit_ofk](https://github.com/alexcpn/speckit_ofk) |
 | Onboard | 为 spec-kit 项目新人提供情境化入门与渐进式成长。讲解规范、梳理依赖、验证理解，并指引下一步 | `process` | Read+Write | [spec-kit-onboard](https://github.com/dmux/spec-kit-onboard) |
 | Optimize | 审计并优化 AI 治理的上下文效率——token 预算、规则健康度、可解释性、压缩、连贯性和回声检测 | `process` | Read+Write | [spec-kit-optimize](https://github.com/sakitA/spec-kit-optimize) |
 | Orchestration Task Context Management | 为生成的 Spec Kit 任务文件添加子智能体工作单元编排 | `process` | Read+Write | [spec-kit-orchestration-task-context-management](https://github.com/benizzio/spec-kit-orchestration-task-context-management) |
@@ -152,6 +152,7 @@
 | Superspec | 把 spec-kit 与 obra/superpowers（头脑风暴、TDD、子智能体、代码审查）桥接成统一、可续跑的工作流，支持优雅降级和会话进度跟踪 | `process` | Read+Write | [superspec](https://github.com/WangX0111/superspec) |
 | Tasks to GitHub Project | 把 Spec Kit 任务发布并同步为 GitHub Project（v2）看板上的卡片，在 spec.md/tasks.md 与看板之间同步优先级和状态。 | `integration` | Read+Write | [spec-kit-tasks-to-project](https://github.com/mancioshell/spec-kit-tasks-to-project) |
 | Team Assign | 把 tasks.md 中的条目指派给人类工程师、拆分为子任务，并为每位工程师生成工作板 | `process` | Read+Write | [spec-kit-team-assign](https://github.com/tarunkumarbhati/spec-kit-team-assign) |
+| Test Coverage Drift Control | 在实现之后生成增量的覆盖率漂移报告和计划中的整改任务 | `code` | Read+Write | [spec-kit-test-coverage-drift-control](https://github.com/benizzio/spec-kit-test-coverage-drift-control) |
 | Time Machine | 把完整的规范驱动开发工作流追溯性地应用到现有代码库——逐功能地分析、写规范、交付 | `process` | Read+Write | [spec-kit-time-machine](https://github.com/teeyo/spec-kit-time-machine) |
 | TinySpec | 面向小任务的轻量单文件工作流——跳过厚重的多步规范驱动开发流程 | `process` | Read+Write | [spec-kit-tinyspec](https://github.com/Quratulain-bilal/spec-kit-tinyspec) |
 | Token Budget | 降低 Spec Kit 工作流中的 LLM token 消耗：原地压缩产物、按阶段限定阅读范围、抑制冗余行文，并报告 token 用量 | `process` | Read+Write | [spec-kit-token-budget](https://github.com/tinesoft/spec-kit-token-budget) |
