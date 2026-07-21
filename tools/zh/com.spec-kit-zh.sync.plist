@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  launchd 定时任务（B 档：半自动）：每周一 10:00 只读检测官方 spec-kit 更新，
+  launchd 定时任务（B 档：半自动）：每天 10:00 只读检测官方 spec-kit 更新，
   有待翻文件就开/刷新一个「待翻清单」issue。不翻译、不改仓库（翻译由人工触发）。
   安装: cp tools/zh/com.spec-kit-zh.sync.plist ~/Library/LaunchAgents/ && launchctl load ~/Library/LaunchAgents/com.spec-kit-zh.sync.plist
   卸载: launchctl unload ~/Library/LaunchAgents/com.spec-kit-zh.sync.plist && rm ~/Library/LaunchAgents/com.spec-kit-zh.sync.plist
@@ -22,8 +22,6 @@
 
     <key>StartCalendarInterval</key>
     <dict>
-        <key>Weekday</key>
-        <integer>1</integer>
         <key>Hour</key>
         <integer>10</integer>
         <key>Minute</key>
