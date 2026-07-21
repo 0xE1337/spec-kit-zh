@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  launchd 定时任务：每周一 10:00 自动同步官方 spec-kit。
+  安装: cp tools/zh/com.spec-kit-zh.sync.plist ~/Library/LaunchAgents/ && launchctl load ~/Library/LaunchAgents/com.spec-kit-zh.sync.plist
+  卸载: launchctl unload ~/Library/LaunchAgents/com.spec-kit-zh.sync.plist && rm ~/Library/LaunchAgents/com.spec-kit-zh.sync.plist
+  手动触发一次: launchctl start com.spec-kit-zh.sync
+  日志: tools/zh/sync.log
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.spec-kit-zh.sync</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/yijingguo/code/spec-kit-zh/tools/zh/sync.sh</string>
+    </array>
+
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Weekday</key>
+        <integer>1</integer>
+        <key>Hour</key>
+        <integer>10</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <false/>
+
+    <key>StandardOutPath</key>
+    <string>/Users/yijingguo/code/spec-kit-zh/tools/zh/sync.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/yijingguo/code/spec-kit-zh/tools/zh/sync.log</string>
+</dict>
+</plist>

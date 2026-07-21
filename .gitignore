@@ -60,3 +60,4 @@ docs/dev
 .grok/
 .specify/
 specs/
+sync.log
