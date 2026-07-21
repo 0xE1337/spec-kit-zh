@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  launchd 定时任务：每周一 10:00 自动同步官方 spec-kit。
+  launchd 定时任务（B 档：半自动）：每周一 10:00 只读检测官方 spec-kit 更新，
+  有待翻文件就开/刷新一个「待翻清单」issue。不翻译、不改仓库（翻译由人工触发）。
   安装: cp tools/zh/com.spec-kit-zh.sync.plist ~/Library/LaunchAgents/ && launchctl load ~/Library/LaunchAgents/com.spec-kit-zh.sync.plist
   卸载: launchctl unload ~/Library/LaunchAgents/com.spec-kit-zh.sync.plist && rm ~/Library/LaunchAgents/com.spec-kit-zh.sync.plist
   手动触发一次: launchctl start com.spec-kit-zh.sync
   日志: tools/zh/sync.log
+  说明: tools/zh/sync.sh 是「全自动翻译+开PR」脚本，仅供已登录 claude 的本地/交互场景手动运行；
+        定时任务用的是只读的 detect.sh。
 -->
 <plist version="1.0">
 <dict>
@@ -14,7 +17,7 @@
     <key>ProgramArguments</key>
     <array>
         <string>/bin/bash</string>
-        <string>/Users/yijingguo/code/spec-kit-zh/tools/zh/sync.sh</string>
+        <string>/Users/yijingguo/code/spec-kit-zh/tools/zh/detect.sh</string>
     </array>
 
     <key>StartCalendarInterval</key>
