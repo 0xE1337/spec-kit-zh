@@ -50,7 +50,7 @@ $NEW_LIST
 
 ---
 处理方式：在 Claude Code 会话里说一句「同步官方更新」，即按术语表翻译并合并。
-🤖 由 tools/zh/detect.sh 每周自动检测生成（本 issue 会随后续更新原地刷新）。
+🤖 由 tools/zh/detect.sh 每天自动检测生成（本 issue 会随后续更新原地刷新）。
 EOF
 )"
 
