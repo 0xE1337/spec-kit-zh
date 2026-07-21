@@ -11,6 +11,7 @@ set -euo pipefail
 export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/yijingguo/.local/bin:/Users/yijingguo/.nvm/versions/node/v24.10.0/bin:$PATH"
 
 REPO="/Users/yijingguo/code/spec-kit-zh"
+SLUG="0xE1337/spec-kit-zh"   # 所有 gh 命令显式指向本仓库，杜绝回退到 upstream
 cd "$REPO"
 DRY="${1:-}"
 
@@ -25,7 +26,7 @@ if [[ "$(git rev-parse --abbrev-ref HEAD)" != "main" ]]; then
 fi
 
 # 2. 已有未合并的同步 PR 就不再叠加开新 PR
-OPEN_PR="$(gh pr list --state open --json number,headRefName --jq '[.[]|select(.headRefName|startswith("sync/upstream-"))][0].number' 2>/dev/null || true)"
+OPEN_PR="$(gh pr list -R "$SLUG" --state open --json number,headRefName --jq '[.[]|select(.headRefName|startswith("sync/upstream-"))][0].number' 2>/dev/null || true)"
 if [[ -n "$OPEN_PR" ]]; then
   log "已有未合并的同步 PR #$OPEN_PR，先合并它再说，跳过"; exit 0
 fi
@@ -47,7 +48,7 @@ if ! git merge upstream/main --no-edit >/dev/null 2>&1; then
   git switch main >/dev/null 2>&1
   git branch -D "$BRANCH" >/dev/null 2>&1
   log "合并出现冲突（异常，应人工介入）——已中止。开一个 issue 提醒。"
-  gh issue create --title "自动同步冲突：$NEWTAG 需人工合并" \
+  gh issue create -R "$SLUG" --title "自动同步冲突：$NEWTAG 需人工合并" \
     --body "sync.sh 在合并 upstream/main（领先 $AHEAD commit，最新 $NEWTAG）时遇到冲突，已自动中止。请手动 \`git merge upstream/main\` 处理。" \
     2>/dev/null || true
   exit 1
@@ -98,7 +99,7 @@ if git diff --cached --quiet; then
   log "所有翻译均失败，无改动可提交（失败 ${#FAILED[@]}）。切回 main、清理分支、开 issue。"
   git switch main >/dev/null 2>&1
   git branch -D "$BRANCH" >/dev/null 2>&1
-  gh issue create --title "自动同步：$NEWTAG 翻译失败需人工处理" \
+  gh issue create -R "$SLUG" --title "自动同步：$NEWTAG 翻译失败需人工处理" \
     --body "sync.sh 检测到 ${#STALE[@]} 过期 / ${#NEWFILES[@]} 新增，但翻译全部失败：$(printf '%s; ' "${FAILED[@]:-}")见 tools/zh/sync.log。" \
     2>/dev/null || true
   exit 1
@@ -125,6 +126,6 @@ $( [[ ${#FAILED[@]} -gt 0 ]] && printf '## ⚠️ 翻译失败，需手动处理
 🤖 由 tools/zh/sync.sh 自动生成
 EOF
 )"
-gh pr create --base main --head "$BRANCH" --title "sync: 同步官方 $NEWTAG（AI 初翻待审校）" --body "$BODY" >/dev/null
+gh pr create -R "$SLUG" --base main --head "$BRANCH" --title "sync: 同步官方 $NEWTAG（AI 初翻待审校）" --body "$BODY" >/dev/null
 git switch main >/dev/null 2>&1
 log "已开同步 PR：$NEWTAG（过期 ${#DONE_STALE[@]}、新增 ${#DONE_NEW[@]}、失败 ${#FAILED[@]}）"

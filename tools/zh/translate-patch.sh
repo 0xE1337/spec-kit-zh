@@ -39,6 +39,13 @@ $DIFF
 ===== 当前中文译文（$DST）=====
 $(cat "$DST")
 EOF
-)" > "$DST.tmp" && mv "$DST.tmp" "$DST"
+)" > "$DST.tmp"
 
+# 校验 claude 输出：非空且仍含 zh-source 头，否则视为失败，保留原译文不动
+if [[ ! -s "$DST.tmp" ]] || ! grep -q '^<!-- zh-source:' "$DST.tmp"; then
+  rm -f "$DST.tmp"
+  echo "claude 输出无效（空或缺 zh-source 头），已保留原译文: $SRC" >&2
+  exit 1
+fi
+mv "$DST.tmp" "$DST"
 echo "已增量更新: ${DST#"$ROOT"/} ($OLD → $NEW)"
