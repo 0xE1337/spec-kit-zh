@@ -10,10 +10,20 @@ SLUG="0xE1337/spec-kit-zh"
 cd "$REPO"
 log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"; }
 
+# 已全部同步时，自动关掉还开着的「待翻清单」issue（生命周期闭环，不依赖人工记得关）
+close_pending() {
+  local n
+  n="$(gh issue list -R "$SLUG" --state open --search '待翻清单 in:title' --json number --jq '.[0].number' 2>/dev/null || true)"
+  if [[ -n "$n" ]]; then
+    gh issue close "$n" -R "$SLUG" --comment "检测到仓库已与官方对齐，待翻清单已全部完成，自动关闭。" >/dev/null 2>&1 || true
+    log "已自动关闭待翻清单 issue #$n（已全部同步）"
+  fi
+}
+
 git fetch upstream --quiet --tags
 AHEAD="$(git rev-list --count HEAD..upstream/main)"
 if [[ "$AHEAD" == "0" ]]; then
-  log "已是最新，无官方更新"; exit 0
+  log "已是最新，无官方更新"; close_pending; exit 0
 fi
 NEWTAG="$(git tag --sort=-creatordate | grep -E '^v[0-9]' | head -1)"
 
@@ -32,7 +42,7 @@ while IFS= read -r f; do
 done < <(git ls-tree -r --name-only upstream/main -- docs templates extensions presets spec-driven.md 2>/dev/null | grep '\.md$' || true)
 
 if [[ ${#STALE[@]} -eq 0 && ${#NEW[@]} -eq 0 ]]; then
-  log "官方领先 $AHEAD commit，但未触及翻译范围（仅 src/tests 等）。无需通知。"; exit 0
+  log "官方领先 $AHEAD commit，但未触及翻译范围（仅 src/tests 等）。无需通知。"; close_pending; exit 0
 fi
 
 log "检测到待翻：过期 ${#STALE[@]}、新增 ${#NEW[@]}（官方 $NEWTAG）"
