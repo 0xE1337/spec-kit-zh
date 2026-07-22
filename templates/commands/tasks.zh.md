@@ -1,5 +1,5 @@
 ---
-description: 基于现有的设计产物，为功能生成一份可执行、按依赖排序的 tasks.md。
+<!-- zh-base: 2a0ada9 -->
 handoffs:
   - label: Analyze For Consistency
     agent: speckit.analyze
@@ -12,6 +12,7 @@ handoffs:
 scripts:
   sh: scripts/bash/setup-tasks.sh --json
   ps: scripts/powershell/setup-tasks.ps1 -Json
+  py: scripts/python/setup_tasks.py --json
 ---
 
 <!-- zh-source: templates/commands/tasks.md -->

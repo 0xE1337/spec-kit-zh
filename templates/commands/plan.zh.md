@@ -1,5 +1,5 @@
 ---
-description: 使用计划模板执行实现规划工作流，生成设计产物。
+<!-- zh-base: 2a0ada9 -->
 handoffs:
   - label: Create Tasks
     agent: speckit.tasks
@@ -11,6 +11,7 @@ handoffs:
 scripts:
   sh: scripts/bash/setup-plan.sh --json
   ps: scripts/powershell/setup-plan.ps1 -Json
+  py: scripts/python/setup_plan.py --json
 ---
 
 <!-- zh-source: templates/commands/plan.md -->

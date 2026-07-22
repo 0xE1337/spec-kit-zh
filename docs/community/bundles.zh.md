@@ -1,5 +1,5 @@
 <!-- zh-source: docs/community/bundles.md -->
-<!-- zh-base: b7e67f5 -->
+<!-- zh-base: 5760061 -->
 
 # 社区套装
 
@@ -8,7 +8,10 @@
 
 套装把现有的 Spec Kit 组件——扩展、预设、工作流和步骤——组合成一套面向角色或团队的完整配置。当你希望用户能一次性装好一组经过测试的组件，而不必依次执行多条安装命令时，套装就派上用场了。
 
-社区套装目录源就绪后，通过审核的社区套装条目会列在这里。要提交套装供审查，请创建一个 [Bundle Submission](https://github.com/github/spec-kit/issues/new?template=bundle_submission.yml) issue。
+通过审核的社区套装条目发布在 [`bundles/catalog.community.json`](https://github.com/github/spec-kit/blob/main/bundles/catalog.community.json) 中，并列在下方。内置的社区来源是仅发现（discovery-only）的：`specify bundle search` 和 `specify bundle info` 可以查看条目，但按 ID 安装需要显式添加一个 install-allowed 的目录源。显式目录源的默认优先级高于内置社区来源。要提交套装供审查，请创建一个 [Bundle Submission](https://github.com/github/spec-kit/issues/new?template=bundle_submission.yml) issue。
+
+| 套装 | 用途 | 角色或团队 | 提供内容 | 所需目录源 | URL |
+|--------|---------|--------------|----------|-------------------|-----|
 
 ## 提交内容
 
