@@ -2303,7 +2303,7 @@ class TestPresetCatalog:
         zip_bytes = zip_buf.getvalue()
 
         release_response = MagicMock()
-        release_response.read.return_value = json.dumps(
+        release_response.read.side_effect = io.BytesIO(json.dumps(
             {
                 "assets": [
                     {
@@ -2312,12 +2312,12 @@ class TestPresetCatalog:
                     }
                 ]
             }
-        ).encode()
+        ).encode()).read
         release_response.__enter__ = lambda s: s
         release_response.__exit__ = MagicMock(return_value=False)
 
         asset_response = MagicMock()
-        asset_response.read.return_value = zip_bytes
+        asset_response.read.side_effect = io.BytesIO(zip_bytes).read
         asset_response.__enter__ = lambda s: s
         asset_response.__exit__ = MagicMock(return_value=False)
 
@@ -5381,6 +5381,9 @@ class TestPresetEnableDisable:
 
 
 LEAN_PRESET_DIR = Path(__file__).parent.parent / "presets" / "lean"
+CORE_CONSTITUTION_COMMAND = (
+    Path(__file__).parent.parent / "templates" / "commands" / "constitution.md"
+)
 
 LEAN_COMMAND_NAMES = [
     "speckit.specify",
@@ -5389,6 +5392,31 @@ LEAN_COMMAND_NAMES = [
     "speckit.implement",
     "speckit.constitution",
 ]
+
+
+@pytest.mark.parametrize(
+    "command_path",
+    [
+        CORE_CONSTITUTION_COMMAND,
+        LEAN_PRESET_DIR / "commands" / "speckit.constitution.md",
+    ],
+    ids=["core", "lean"],
+)
+def test_constitution_commands_guard_against_non_governance_work(command_path):
+    """Constitution commands defer non-governance work instead of executing it."""
+    content = command_path.read_text()
+    lower_content = content.lower()
+    normalized_content = " ".join(lower_content.split())
+
+    assert "## Scope Guard" in content
+    assert "**MUST NOT**" in content
+    assert "Classify every part" in content
+    assert "application source files" in content
+    assert "non-governance intent" in content
+    assert "`Next Actions`" in content
+    assert "__SPECKIT_COMMAND_SPECIFY__" in content
+    assert "omit" in lower_content
+    assert "do not invoke it" in normalized_content or "without invoking it" in normalized_content
 
 
 class TestLeanPreset:
@@ -7458,10 +7486,10 @@ def test_preset_wrapper_resolves_ghes_asset_when_host_configured(tmp_path, monke
     def fake_open(url, timeout=None, extra_headers=None):
         captured.append(url)
         resp = MagicMock()
-        resp.read.return_value = json.dumps({
+        resp.read.side_effect = io.BytesIO(json.dumps({
             "assets": [{"name": "pack.zip",
                         "url": "https://ghes.example/api/v3/repos/o/r/releases/assets/9"}]
-        }).encode()
+        }).encode()).read
         yield resp
 
     monkeypatch.setattr(catalog, "_open_url", fake_open)

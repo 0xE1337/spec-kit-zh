@@ -2,6 +2,51 @@
 
 <!-- insert new changelog below this comment -->
 
+## [0.13.4] - 2026-07-22
+
+### Changed
+
+- docs(concepts): document the spec-of-specs feature breakdown approach (#3648)
+- fix(scripts): git-ext PowerShell emits the '# To persist' SPECIFY_FEATURE hint (parity) (#3632)
+- fix(integrations): validate cached catalog shape before returning it (#3627)
+- fix(bundler): reject non-list 'catalogs' in bundle-catalogs.yml with a clean error (#3623)
+- fix(bundler): guard lazy .hostname ValueError in catalog add_source (#3644)
+- Add Intake Authoring Governance preset to community catalog (#3643)
+- feat: add Factory Droid CLI integration (#822) (#3587)
+- docs(installation): document the 'py' (Python) script type (#3640)
+- fix(init): show hyphenated /speckit-<name> in Next Steps for Forge projects (#3642)
+- fix(extensions): render hyphenated hook invocations for Forge projects (#3641)
+- fix(workflows): workflow add detects local YAML files case-insensitively (#3633)
+- fix(workflows): list-literal expression ignores trailing/empty commas (#3631)
+- fix(workflows): StepRegistry.add tolerates a corrupted non-dict existing entry (#3630)
+- fix(bundler): reject non-mapping 'integration' in a bundle manifest (#3629)
+- fix(workflows): command/prompt steps fail cleanly on a non-string integration (#3626)
+- docs(core): document the 'py' (Python) --script type in the init option table (#3625)
+- fix(workflows): gate prompt uses isdecimal() so a superscript digit doesn't crash (#3624)
+- fix(integrations): Cline dispatches hyphenated /speckit-<cmd> invocations (#3622)
+- docs(upgrade): document integration upgrade / extension update as the project-files upgrade path (#3326)
+- chore: release 0.13.3, begin 0.13.4.dev0 development (#3645)
+
+## [0.13.3] - 2026-07-22
+
+### Changed
+
+- fix(integrations): escape Rich markup in --integration-options error messages (#3458)
+- docs: document __SPECKIT_COMMAND_ token for portable cross-command references (#3503)
+- [preset] Add Parallel Autonomous Run Governance preset to community catalog (#3614)
+- docs(workflows): fix stale FanOutStep docstring claiming sequential-only execution (#3639)
+- [bundle] Add SicarioSpec Security & Governance Bundle to community catalog (#3636)
+- [preset] Update Autonomous Run Governance preset to v0.3.2 (#3615)
+- fix(workflows): validate every redirect hop when fetching workflow/step catalogs (#3637)
+- Add pipeline workflow to community catalog (#3338)
+- [extension] Add Linear Weave extension to community catalog (#3609)
+- docs: clarify hook priority validation semantics (#3594)
+- fix(workflows): reject a non-string 'integration'/'model' in command & prompt steps (#3597)
+- ci: add dependency audit workflow (#3138)
+- Add Intake Review Governance preset to community catalog (#3613)
+- fix(workflows): reject non-list input 'enum' instead of crashing (#3601)
+- chore: release 0.13.2, begin 0.13.3.dev0 development (#3617)
+
 ## [0.13.2] - 2026-07-21
 
 ### Changed
