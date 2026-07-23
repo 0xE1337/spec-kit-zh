@@ -1,5 +1,5 @@
 <!-- zh-source: extensions/EXTENSION-DEVELOPMENT-GUIDE.md -->
-<!-- zh-base: 309166e -->
+<!-- zh-base: 840fb8d -->
 
 # 扩展开发指南
 
@@ -255,6 +255,7 @@ scripts:                                    # 可选
 
 - `$ARGUMENTS`：用户提供的参数
 - `{SCRIPT}`：注册时会被替换为脚本路径
+- `__SPECKIT_COMMAND_<NAME>__`：会被替换为对另一个命令的调用，使用当前集成的分隔符渲染（参见[引用其他命令](#引用其他命令)）
 
 **示例**：
 
@@ -269,6 +270,32 @@ args="$ARGUMENTS"
 echo "Running with args: $args"
 ```
 ````
+
+### 引用其他命令
+
+命令正文是一个 *模板*，Spec Kit 会为每个智能体各渲染一次。不同智能体调用命令的语法各不相同——例如 `/speckit.plan`（点号分隔符）或 `/speckit-plan`（连字符分隔符）。有些智能体在技能模式下还会用不同的前缀（例如 Kimi 用 `/skill:speckit-plan`，Codex/ZCode 用 `$speckit-plan`）。所以当你在正文里引用同级命令时，**不要写死一个字面调用**，比如 `/speckit.my-ext.prepare`。字面写法只对某一个智能体正确，在其余智能体上都会失效。
+
+请改用与智能体无关的标记 `__SPECKIT_COMMAND_<NAME>__`。Spec Kit 会用当前集成的 `invoke_separator` 把它解析成 `/speckit<separator>...` 形式的调用（集成在技能模式输出里可能还会对结果做进一步后处理）。
+
+把命令名写成大写，去掉 `speckit.` 前缀，并把每个点分段之间的分隔符换成下划线：
+
+| 命令文件 | 标记 |
+| --- | --- |
+| `speckit.plan.md` | `__SPECKIT_COMMAND_PLAN__` |
+| `speckit.bug.fix.md` | `__SPECKIT_COMMAND_BUG_FIX__` |
+| `speckit.git.commit.md` | `__SPECKIT_COMMAND_GIT_COMMIT__` |
+
+解析器会把每个下划线映射回当前智能体的分隔符，所以标记适合用来引用那些名称段都是单个单词的命令。（命令名是像 `git.commit` 这样的点分段；标记方案会重建这些点号，且不会在段内携带连字符。）
+
+**示例**——一段把用户引导到下一步的命令正文：
+
+```markdown
+评估产物就绪后，下一步是 `__SPECKIT_COMMAND_BUG_FIX__ slug=<slug>`。
+```
+
+它对基于斜杠命令的智能体渲染为 `/speckit.bug.fix slug=<slug>`，对基于技能的智能体渲染为 `/speckit-bug-fix slug=<slug>`，依此类推——作者只写一次就能保持可移植。第一方的 `bug` 和 `git` 扩展只用这种标记；可用示例见 `extensions/bug/commands/`。
+
+> **当前限制——技能模式。** 标记解析发生在命令渲染路径（`CommandRegistrar`）中，因此它在扩展安装 *命令文件* 时生效。当扩展被注册为面向基于技能的智能体的 *技能* 时，它**尚未**生效：`_register_extension_skills` 会解析占位符并对内容做后处理，但从不调用 `resolve_command_refs`，所以在这种模式下 `__SPECKIT_COMMAND_<NAME>__` 标记会原封不动地传给 Codex、ZCode、Kimi 等智能体。在这一渲染步骤落地之前，请优先在命令文件扩展中使用该标记，避免在面向基于技能的智能体的技能正文中依赖它。
 
 ### 脚本路径重写
 

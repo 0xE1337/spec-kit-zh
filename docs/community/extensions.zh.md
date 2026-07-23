@@ -1,5 +1,5 @@
 <!-- zh-source: docs/community/extensions.md -->
-<!-- zh-base: 7f97f1f -->
+<!-- zh-base: b79ae33 -->
 
 # 社区扩展
 
@@ -73,6 +73,7 @@
 | Jira Integration (Sync Engine) | 幂等、感知漂移、故障即拒绝（fail-closed）的对账引擎，把 spec-kit 规范镜像到 Jira（每个仓库一个 Epic、每份规范一个 Story、每个阶段一个 Subtask） | `integration` | Read+Write | [spec-kit-jira-sync](https://github.com/ashbrener/spec-kit-jira-sync) |
 | Learning Extension | 从实现生成教学指南，并为澄清补充导师式讲解上下文 | `docs` | Read+Write | [spec-kit-learn](https://github.com/imviancagrace/spec-kit-learn) |
 | Linear Integration | 把 spec-kit 功能目录镜像到 Linear（文件系统 → Linear，基于对账，单向）。 | `integration` | Read+Write | [spec-kit-linear-sync](https://github.com/ashbrener/spec-kit-linear-sync) |
+| Linear Weave | 把 Spec Kit 编织进 Linear：拉取需求、把 tasks.md 镜像成子 issue、同步状态 | `integration` | Read+Write | [spec-kit-linear-weave](https://github.com/tonydwoodhouse/spec-kit-linear-weave) |
 | LLM Wiki | 由 LLM 维护、持续累积的项目 wiki：源码摄取、带引用的回答和一致性检查 | `docs` | Read+Write | [spec-kit-wiki](https://github.com/formin/spec-kit-wiki) |
 | Loop Engineering | 为规范驱动开发构建安全的自主智能体循环：制作者/检查者分离、外置的循环状态，以及让你"始终当工程师"的护栏，对抗理解债务与认知弃权 | `process` | Read+Write | [spec-kit-loop](https://github.com/formin/spec-kit-loop) |
 | MAQA — Multi-Agent & Quality Assurance | 协调者 → 功能 → QA 智能体的工作流，基于并行 worktree 实现。与语言无关。自动检测已安装的看板插件。可选 CI 关卡。 | `process` | Read+Write | [spec-kit-maqa-ext](https://github.com/GenieRobot/spec-kit-maqa-ext) |

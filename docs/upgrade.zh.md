@@ -1,5 +1,5 @@
 <!-- zh-source: docs/upgrade.md -->
-<!-- zh-base: 36501d4 -->
+<!-- zh-base: 914d7b8 -->
 
 # 升级指南
 
@@ -15,7 +15,7 @@
 | **CLI 工具——固定版本** | `specify self upgrade --tag vX.Y.Z[suffix]` | 升级到特定发布 tag，而不是最新稳定版。后缀仅限 dev、alpha/beta/rc 和/或构建元数据形式。 |
 | **CLI 工具——手动回退** | `uv tool install specify-cli --force --from git+https://github.com/github/spec-kit.git@vX.Y.Z` | `specify self upgrade` 不可用（较旧的安装），或你想完全掌控安装命令时。 |
 | **CLI 工具——手动回退（pipx）** | `pipx install --force git+https://github.com/github/spec-kit.git@vX.Y.Z` | 同上，用于 pipx 安装。 |
-| **项目文件** | `specify init --here --force --integration <your-agent>` | 更新项目中的斜杠命令、模板和脚本 |
+| **项目文件** | 运行 `specify integration upgrade <key>`，然后运行 `specify extension update` | 刷新项目中已安装的集成文件和扩展 |
 | **两者都升级** | 先升级 CLI，再更新项目 | 大版本更新时推荐 |
 
 ---
@@ -92,91 +92,94 @@ specify self check
 
 ## 第二部分：更新项目文件
 
-当 Spec Kit 发布新功能（比如新的斜杠命令或更新的模板）时，你需要刷新项目中的 Spec Kit 文件。
+当 Spec Kit 发布新功能（比如新的斜杠命令、更新的模板或扩展变更）时，你需要刷新已安装到项目中的 Spec Kit 文件。
 
 ### 哪些内容会被更新？
 
-运行 `specify init --here --force` 会更新：
+对于已有的 Spec Kit 项目，请优先使用清单感知（manifest-aware）的升级路径：
 
-- ✅ **斜杠命令文件**（`.claude/commands/`、`.github/prompts/` 等）
-- ✅ **脚本文件**（`.specify/scripts/`）——**仅在带 `--force` 时**；不带它只会补充缺失的文件
-- ✅ **模板文件**（`.specify/templates/`）——**仅在带 `--force` 时**；不带它只会补充缺失的文件
-- ✅ **共享记忆文件**（`.specify/memory/`）——**⚠️ 见下方警告**
+- ✅ **集成的命令/技能文件**（`.claude/skills/`、`.github/prompts/`、`.agents/skills/` 等）
+- ✅ **受管的共享脚本和模板**（`.specify/scripts/`、`.specify/templates/`）——当它们与上一份受管副本相比未被修改时
+- ✅ **已安装的扩展**——当你运行 `specify extension update` 时
+
+集成升级命令会使用安装清单（install manifest）来检测本地改动。如果某个受管集成文件在安装后被修改过，该命令会停止并要求你检查改动，或带 `--force` 重新运行。
 
 ### 哪些内容是安全的？
 
-以下文件升级时**绝不会被触碰**——模板包里根本不包含它们：
+以下文件在清单感知的集成/扩展升级路径下**绝不会被触碰**：
 
 - ✅ **你的规范**（`specs/001-my-feature/spec.md` 等）——**确认安全**
 - ✅ **你的实现计划**（`specs/001-my-feature/plan.md`、`tasks.md` 等）——**确认安全**
+- ✅ **你的宪章**（`.specify/memory/constitution.md`）——使用 `specify integration upgrade` 时
 - ✅ **你的源代码**——**确认安全**
 - ✅ **你的 git 历史**——**确认安全**
 
 `specs/` 目录被完全排除在模板包之外，升级期间永远不会被修改。
 
-### 更新命令
+### 1. 检查已安装的集成
 
 在项目目录内运行：
+
+```bash
+specify integration status
+```
+
+这会报告默认集成、所有已安装的集成，以及任何被修改过或缺失的受管文件。你也可以查看 `.specify/integration.json`；已安装的集成列在 `installed_integrations` 之下。
+
+### 2. 升级每个已安装的集成
+
+在项目目录内运行：
+
+```bash
+specify integration upgrade <key>
+```
+
+把 `<key>` 替换为某个已安装的集成键，例如 `copilot`、`claude` 或 `codex`。在装有多个已安装集成的项目中，对每个已安装的键各运行一次该命令。
+
+**示例：**
+
+```bash
+specify integration upgrade claude
+specify integration upgrade codex
+```
+
+`--script`、`--integration-options`、`--force` 等选项参见[集成参考](reference/integrations.md#upgrade-an-integration)。
+
+### 3. 更新已安装的扩展
+
+运行：
+
+```bash
+specify extension update
+```
+
+不带扩展参数时，这会更新所有已安装的扩展。用 `specify extension update <extension-id-or-name>` 只更新某一个扩展。详情参见[扩展参考](reference/extensions.md#update-extensions)。
+
+### 兜底方案：重新运行 init
+
+如果项目早于清单机制、缺少集成元数据，或需要更大范围的恢复，你仍然可以重新运行 init：
 
 ```bash
 specify init --here --force --integration <your-agent>
 ```
 
-把 `<your-agent>` 替换为你的 AI 编码智能体。参见[支持的 AI 编码智能体集成](reference/integrations.md)列表
-
-**示例：**
-
-```bash
-specify init --here --force --integration copilot
-```
-
-### 理解 `--force` 标志
-
-不带 `--force` 时，CLI 会发出警告并要求确认：
-
-```text
-Warning: Current directory is not empty (25 items)
-Template files will be merged with existing content and may overwrite existing files
-Proceed? [y/N]
-```
-
-带上 `--force` 后会跳过确认并立即执行。它还会用已安装 Spec Kit 发布版中的最新版本**覆盖共享基础设施文件**（`.specify/scripts/` 和 `.specify/templates/`）。
-
-不带 `--force` 时，已经存在的共享基础设施文件会被跳过——CLI 会打印警告并列出被跳过的文件，让你知道哪些没有被更新。
-
-**重要：你的 `specs/` 目录始终安全。** `--force` 标志只影响模板类文件（命令、脚本、模板、记忆文件）。你在 `specs/` 中的功能规范、计划和任务从不包含在升级包中，不可能被覆盖。
-
----
+请把它当作兜底方案，而不是默认的项目文件升级路径。它会刷新所选集成和共享的项目脚手架，但在覆盖文件前不会执行同样的按集成清单检查。
 
 ## ⚠️ 重要警告
 
-### 1. 宪章文件会被覆盖
+### 1. 宪章文件与记忆定制
 
-**已知问题**：`specify init --here --force` 目前会用默认模板覆盖 `.specify/memory/constitution.md`，抹掉你做过的所有定制。
+`specify integration upgrade <key>` 不会更新 `.specify/memory/constitution.md`。
 
-**变通办法**：
+兜底的 `specify init --here --force --integration <your-agent>` 路径也会保留已存在的 `.specify/memory/constitution.md`；如果该文件缺失，init 会用当前的宪章模板创建它。对于清单感知的升级路径，你无需备份/恢复宪章这一步。
 
-```bash
-# 1. 升级前先备份宪章
-cp .specify/memory/constitution.md .specify/memory/constitution-backup.md
+与任何大范围的兜底刷新一样，使用 `init --here --force` 前请提交或备份本地定制，以便你审查最终产生的 diff。
 
-# 2. 执行升级
-specify init --here --force --integration copilot
+### 2. 自定义的集成、脚本或模板
 
-# 3. 恢复你定制过的宪章
-mv .specify/memory/constitution-backup.md .specify/memory/constitution.md
-```
+`specify integration upgrade <key>` 在清单跟踪的集成文件被本地修改时会阻断，除非你传入 `--force`。
 
-或者用 git 恢复：
-
-```bash
-# 升级后，从 git 历史恢复
-git restore .specify/memory/constitution.md
-```
-
-### 2. 自定义的脚本或模板
-
-如果你定制过 `.specify/scripts/` 或 `.specify/templates/` 中的文件，`--force` 标志会覆盖它们。请先备份：
+共享脚本和模板只有在仍与上一次记录的受管副本一致时才会被刷新。除非你显式使用会覆盖它们的 force/刷新选项，否则本地定制会被保留。如果你定制过 `.specify/scripts/` 或 `.specify/templates/` 中的文件，请先提交或备份：
 
 ```bash
 # 备份自定义模板和脚本
@@ -218,29 +221,29 @@ rm speckit.plan-v1.md
 # 升级 CLI（自动识别 uv tool 或 pipx 安装方式）
 specify self upgrade
 
-# 更新项目文件以获得新命令
-specify init --here --force --integration copilot
+# 检查已安装的集成
+specify integration status
 
-# 如果定制过宪章，恢复它
-git restore .specify/memory/constitution.md
+# 更新项目文件以获得新命令
+specify integration upgrade <key>
+specify extension update
 ```
 
 ### 场景 2："我定制过模板和宪章"
 
 ```bash
-# 1. 备份定制内容
-cp .specify/memory/constitution.md /tmp/constitution-backup.md
+# 1. 提交或备份定制内容
+git status
 cp -r .specify/templates /tmp/templates-backup
 
 # 2. 升级 CLI
 specify self upgrade
 
-# 3. 更新项目
-specify init --here --force --integration copilot
+# 3. 优先使用清单感知的项目更新
+specify integration upgrade <key>
+specify extension update
 
-# 4. 恢复定制内容
-mv /tmp/constitution-backup.md .specify/memory/constitution.md
-# 如有需要，手动合并模板改动
+# 4. 如果升级报告有被修改的受管文件，先审查 diff 再使用 --force
 ```
 
 ### 场景 3："IDE 里出现了重复的斜杠命令"
@@ -265,14 +268,14 @@ rm speckit.old-command-name.md
 git 扩展现在是按需启用（opt-in）的，升级不会安装它，除非你显式添加。
 
 ```bash
-# 手动备份你定制过的文件
-cp .specify/memory/constitution.md .specify/memory/constitution.backup.md
+# 升级 CLI
+specify self upgrade
 
-# 执行升级
-specify init --here --force --integration copilot
+# 刷新集成文件和已安装的扩展
+specify integration upgrade <key>
+specify extension update
 
-# 恢复定制内容
-mv .specify/memory/constitution.backup.md .specify/memory/constitution.md
+# 除非你运行 `specify extension add git`，否则不会添加 git 扩展
 ```
 
 如果之后你想要 git 扩展的命令和钩子，可以显式安装：
@@ -318,19 +321,21 @@ $env:SPECIFY_FEATURE_DIRECTORY = "specs/001-my-feature"
    - Codex 需要 `CODEX_HOME` 环境变量
    - 某些智能体需要重启工作区或清除缓存
 
-### "我丢失了宪章的定制内容"
+### "init 会覆盖我对宪章的定制吗？"
 
-**解决**：从 git 或备份恢复：
+当前的 `specify init --here --force` 会保留已存在的 `.specify/memory/constitution.md`；只有当该文件缺失时，它才会用模板创建。
+
+如果你此前曾因较旧的工作流或手动替换而丢失过宪章改动，可从 git 或备份恢复：
 
 ```bash
-# 如果升级前提交过
+# 如果提交过定制后的宪章
 git restore .specify/memory/constitution.md
 
 # 如果手动备份过
 cp /tmp/constitution-backup.md .specify/memory/constitution.md
 ```
 
-**预防**：升级前一定要提交或备份 `constitution.md`。
+**预防**：日常的项目文件更新请使用 `specify integration upgrade <key>`。如果你需要用兜底的 `specify init --here --force` 路径，请先提交，以便事后审查完整的 diff。
 
 ### 出现 "Warning: Current directory is not empty"
 
@@ -357,7 +362,7 @@ Do you want to continue? [y/N]
 - 智能体命令文件（`.claude/commands/`、`.github/prompts/` 等）
 - `.specify/scripts/` 中的脚本
 - `.specify/templates/` 中的模板
-- `.specify/memory/` 中的记忆文件（包括宪章）
+- `.specify/memory/` 中缺失的记忆文件（如 `.specify/memory/constitution.md`）可能会用模板创建；已存在的宪章会被保留
 
 **哪些不受影响：**
 
@@ -368,7 +373,7 @@ Do you want to continue? [y/N]
 
 **如何应对：**
 
-- **输入 `y` 并回车**——继续合并（升级时推荐）
+- **输入 `y` 并回车**——在使用兜底的 init 路径时继续合并
 - **输入 `n` 并回车**——取消操作
 - **使用 `--force` 标志**——完全跳过这个确认：
 
@@ -378,11 +383,11 @@ Do you want to continue? [y/N]
 
 **什么时候会看到这个警告：**
 
-- ✅ 升级现有 Spec Kit 项目时——**符合预期**
+- ✅ 在现有 Spec Kit 项目中使用兜底的 init 路径时——**符合预期**
 - ✅ 向现有代码库添加 Spec Kit 时——**符合预期**
 - ⚠️ 如果你以为自己是在空目录里新建项目——**不符合预期**
 
-**预防提示**：升级前，如果定制过 `.specify/memory/constitution.md`，请先提交或备份。
+**预防提示**：使用兜底的 init 路径前，请先提交当前工作，这样任何被刷新的文件都容易审查或恢复。
 
 ### "CLI 升级好像没生效"
 
@@ -421,14 +426,15 @@ uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
 
 ### "每次打开项目都要运行 specify 吗？"
 
-**简短回答**：不需要。每个项目只需运行一次 `specify init`（或升级时再运行）。
+**简短回答**：不需要。每个项目只需运行一次 `specify init`，或之后作为兜底恢复路径再运行。
 
 **解释：**
 
 `specify` CLI 工具用于：
 
 - **初始配置**：`specify init` 在项目中引导安装 Spec Kit
-- **升级**：`specify init --here --force` 更新模板和命令
+- **日常项目文件升级**：`specify integration upgrade <key>` 和 `specify extension update`
+- **兜底恢复**：当集成元数据缺失或无法使用清单感知路径时，用 `specify init --here --force`
 - **诊断**：`specify check` 验证工具安装情况
 
 运行过 `specify init` 之后，斜杠命令（如 `/speckit.specify`、`/speckit.plan` 等）就**永久安装**在项目的智能体目录（`.claude/`、`.github/prompts/`、`.pi/prompts/`、`.omp/commands/` 等）中了。AI 编码智能体直接读取这些命令文件——不需要再运行 `specify`。

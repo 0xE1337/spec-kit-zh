@@ -1,5 +1,5 @@
 <!-- zh-source: docs/reference/integrations.md -->
-<!-- zh-base: 74662cf -->
+<!-- zh-base: a5560fc -->
 
 # 支持的 AI 编码智能体集成
 
@@ -18,6 +18,7 @@ Specify CLI 支持范围广泛的 AI 编码智能体。运行 `specify init` 时
 | [Codex CLI](https://github.com/openai/codex) | `codex` | 基于技能的集成；技能安装到 `.agents/skills`，以 `$speckit-<command>` 方式调用 |
 | [Cursor](https://cursor.sh/) | `cursor-agent` | |
 | [Devin for Terminal](https://cli.devin.ai/docs) | `devin` | 基于技能的集成；技能安装到 `.devin/skills/`，以 `/speckit-<command>` 方式调用 |
+| [Factory Droid](https://docs.factory.ai/cli/getting-started/overview) | `droid` | 基于技能的集成；技能安装到 `.factory/skills/`，以 `/speckit-<command>` 方式调用 |
 | [Firebender](https://firebender.com/) | `firebender` | 面向 Android Studio / IntelliJ 的基于 IDE 的智能体 |
 | [Forge](https://forgecode.dev/) | `forge` | |
 | [Gemini CLI](https://github.com/google-gemini/gemini-cli) | `gemini` | |
@@ -88,7 +89,7 @@ specify integration install <key>
 
 | 选项 | 说明 |
 | ------------------------ | ------------------------------------------------------------------------ |
-| `--script sh\|ps`        | 脚本类型：`sh`（bash/zsh）或 `ps`（PowerShell） |
+| `--script sh\|ps\|py`    | 脚本类型：`sh`（bash/zsh）、`ps`（PowerShell）或 `py`（Python） |
 | `--force`                | 主动选择与未声明多安装安全的集成一起安装 |
 | `--integration-options`  | 集成特定的选项（例如 `--integration-options="--commands-dir .myagent/cmds"`） |
 
@@ -124,7 +125,7 @@ specify integration switch <key>
 
 | 选项 | 说明 |
 | ------------------------ | ------------------------------------------------------------------------ |
-| `--script sh\|ps`        | 脚本类型：`sh`（bash/zsh）或 `ps`（PowerShell） |
+| `--script sh\|ps\|py`    | 脚本类型：`sh`（bash/zsh）、`ps`（PowerShell）或 `py`（Python） |
 | `--force`                | 卸载时强制移除已修改的文件；当目标集成已安装时，在更改默认集成的同时覆盖受管的共享模板 |
 | `--refresh-shared-infra` | 即使你定制过共享基础设施文件也一并覆盖（否则会保留你的定制） |
 | `--integration-options`  | 目标集成尚未安装时使用的选项 |
@@ -152,7 +153,7 @@ specify integration upgrade [<key>]
 | 选项 | 说明 |
 | ------------------------ | ------------------------------------------------------------------------ |
 | `--force`                | 即使文件被修改过也一并覆盖 |
-| `--script sh\|ps`        | 脚本类型：`sh`（bash/zsh）或 `ps`（PowerShell） |
+| `--script sh\|ps\|py`    | 脚本类型：`sh`（bash/zsh）、`ps`（PowerShell）或 `py`（Python） |
 | `--integration-options`  | 集成的选项 |
 
 用更新后的模板和命令重新安装一个已安装的集成（例如在升级 Spec Kit 之后）。默认作用于默认集成；如果提供了 key，它必须是已安装的集成之一。会检测本地修改过的文件并阻止升级，除非使用 `--force`。上一次安装遗留下来、不再需要的过期文件会被自动移除。即使升级的是非默认集成，共享模板也会保持与默认集成对齐。

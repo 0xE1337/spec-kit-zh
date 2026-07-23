@@ -1,12 +1,12 @@
 <!-- zh-source: docs/quickstart.md -->
-<!-- zh-base: 396fc2c -->
+<!-- zh-base: a5560fc -->
 
 # 快速上手指南
 
 本指南帮助你开始使用 Spec Kit 进行规范驱动开发。全文将用一个贯穿始终的示例来说明每一步：**Taskify**，一个小型的团队生产力平台。
 
 > [!NOTE]
-> 自动化脚本同时提供 Bash（`.sh`）和 PowerShell（`.ps1`）两个版本。除非你传入 `--script sh|ps`，`specify` CLI 会根据你的操作系统自动选择。
+> 自动化脚本提供 Bash（`.sh`）、PowerShell（`.ps1`）和 Python（`.py`）三个版本。交互式的 `specify init` 会提示你选择其一；非交互式运行则默认为适配你操作系统的 shell 版本。传入 `--script sh|ps|py` 可显式选择。
 
 > [!NOTE]
 > 这里的命令都以 `/speckit.*` 形式给出，但具体的调用方式取决于你的智能体。一些基于技能的智能体使用 `$speckit-*`（例如 Codex、ZCode）或 `/skill:speckit-*`（例如 Kimi）。用你的智能体所暴露的形式即可——其余步骤完全相同。

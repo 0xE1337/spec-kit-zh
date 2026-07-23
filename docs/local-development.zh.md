@@ -1,11 +1,11 @@
 <!-- zh-source: docs/local-development.md -->
-<!-- zh-base: ec45dbd -->
+<!-- zh-base: a5560fc -->
 
 # 本地开发指南
 
 本指南介绍如何在本地迭代 `specify` CLI，而不必先发布 release 或向 `main` 提交代码。
 
-> 脚本现在同时提供 Bash（`.sh`）和 PowerShell（`.ps1`）两种变体。除非传入 `--script sh|ps`，CLI 会根据操作系统自动选择。
+> 脚本提供 Bash（`.sh`）、PowerShell（`.ps1`）和 Python（`.py`）三种变体。交互式运行 `specify init` 时会提示你选择其一；非交互式运行则默认使用适配你操作系统的 shell 变体。传入 `--script sh|ps|py` 可显式选择。
 
 ## 1. 克隆并切换分支
 
@@ -186,7 +186,7 @@ rm -rf .venv dist build *.egg-info
 | `ModuleNotFoundError: typer` | 运行 `uv pip install -e .` |
 | 脚本不可执行（Linux） | 重新运行 init，或执行 `chmod +x scripts/*.sh` |
 | Git 命令不可用 | 用 `specify extension add git` 安装 git 扩展 |
-| 下载了错误的脚本类型 | 显式传入 `--script sh` 或 `--script ps` |
+| 下载了错误的脚本类型 | 显式传入 `--script sh`、`--script ps` 或 `--script py` |
 | 公司网络下出现 TLS 错误 | 配置环境的证书存储或代理。`--skip-tls` 标志已弃用且不产生任何效果。 |
 
 ## 14. 下一步

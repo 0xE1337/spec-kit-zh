@@ -1,5 +1,5 @@
 <!-- zh-source: docs/installation.md -->
-<!-- zh-base: ad601e5 -->
+<!-- zh-base: 11ef1b3 -->
 
 # 安装指南
 
@@ -80,9 +80,9 @@ specify init <project_name> --integration pi
 specify init <project_name> --integration omp
 ```
 
-### 指定脚本类型（Shell 与 PowerShell）
+### 指定脚本类型（Shell、PowerShell 或 Python）
 
-所有自动化脚本现在都有 Bash（`.sh`）和 PowerShell（`.ps1`）两种变体。
+自动化脚本提供 Bash（`.sh`）、PowerShell（`.ps1`）和 Python（`.py`）三种变体。
 
 自动选择行为：
 
@@ -95,6 +95,7 @@ specify init <project_name> --integration omp
 ```bash
 specify init <project_name> --script sh
 specify init <project_name> --script ps
+specify init <project_name> --script py
 ```
 
 ### 跳过智能体工具检查
@@ -134,6 +135,7 @@ specify version
 
 - `.specify/scripts/bash/` —— 包含 `.sh` 脚本（Linux/macOS 默认）
 - `.specify/scripts/powershell/` —— 包含 `.ps1` 脚本（Windows 默认）
+- `.specify/scripts/python/` —— 包含 `.py` 脚本（用 `--script py` 选择；同时也会安装对应平台的 shell 回退脚本）
 
 ## 故障排查
 

@@ -1,5 +1,5 @@
 <!-- zh-source: docs/community/bundles.md -->
-<!-- zh-base: 5760061 -->
+<!-- zh-base: 01d07e2 -->
 
 # 社区套装
 
@@ -12,6 +12,7 @@
 
 | 套装 | 用途 | 角色或团队 | 提供内容 | 所需目录源 | URL |
 |--------|---------|--------------|----------|-------------------|-----|
+| SicarioSpec Security & Governance Bundle | 面向 GitHub Spec Kit 的默认安全（secure-by-default）治理套装。强制数据分类、威胁建模和代码所有者负责的验证关卡。 | `security-engineer` | 1 个扩展、11 个预设 | 见文档 | [sicario-spec](https://github.com/dfirs1car1o/sicario-spec) |
 
 ## 提交内容
 

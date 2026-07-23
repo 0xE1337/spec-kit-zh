@@ -11,7 +11,7 @@ handoffs:
 ---
 
 <!-- zh-source: templates/commands/specify.md -->
-<!-- zh-base: c8ce488 -->
+<!-- zh-base: fb7dc0c -->
 
 ## 用户输入
 
@@ -142,9 +142,9 @@ $ARGUMENTS
     7. 识别关键实体（Key Entities）（如果涉及数据）
     8. 返回：SUCCESS（规范就绪，可进入规划）
 
-6. 使用模板结构把规范写入 SPEC_FILE，用从功能描述（参数）中得出的具体细节替换占位符，同时保持章节顺序和标题不变。
+7. 使用模板结构把规范写入 SPEC_FILE，用从功能描述（参数）中得出的具体细节替换占位符，同时保持章节顺序和标题不变。
 
-7. **规范质量验证**：写完初始规范后，对照质量标准进行验证：
+8. **规范质量验证**：写完初始规范后，对照质量标准进行验证：
 
    a. **创建规范质量检查清单**：使用检查清单模板结构，在 `SPECIFY_FEATURE_DIRECTORY/checklists/requirements.md` 生成一个检查清单文件，包含以下验证条目：
 

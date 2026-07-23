@@ -1,5 +1,5 @@
 <!-- zh-source: docs/reference/core.md -->
-<!-- zh-base: 4905668 -->
+<!-- zh-base: 4f4d19b -->
 
 # 核心命令
 
@@ -15,7 +15,7 @@ specify init [<project_name>]
 | ------------------------ | ------------------------------------------------------------------------ |
 | `--integration <key>`    | 要使用的 AI 编码智能体集成（如 `copilot`、`claude`、`gemini`）。所有可用的 key 见[集成参考](integrations.md) |
 | `--integration-options`  | 传给集成的选项（例如 `--integration-options="--commands-dir .myagent/cmds"`） |
-| `--script sh\|ps`        | 脚本类型：`sh`（bash/zsh）或 `ps`（PowerShell）                          |
+| `--script sh\|ps\|py`    | 脚本类型：`sh`（bash/zsh）、`ps`（PowerShell）或 `py`（Python）          |
 | `--here`                 | 在当前目录初始化，而不是新建目录                                          |
 | `--force`                | 在已有目录中初始化时强制合并/覆盖                                         |
 | `--ignore-agent-tools`   | 跳过对 AI 编码智能体 CLI 工具的检查                                       |

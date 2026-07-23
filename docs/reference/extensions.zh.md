@@ -1,5 +1,5 @@
 <!-- zh-source: docs/reference/extensions.md -->
-<!-- zh-base: b08d665 -->
+<!-- zh-base: b6b3ec4 -->
 
 # 扩展
 
@@ -224,11 +224,13 @@ hooks:
 | `command` | 与钩子关联的扩展命令。 |
 | `enabled` | 钩子是否激活。`enabled: false` 的钩子会被跳过。 |
 | `optional` | 钩子是否可选。为 `true` 时，钩子会连同其 `prompt` 一起展示且可以跳过；为 `false` 时，钩子作为自动钩子输出（带 `EXECUTE_COMMAND` 标记）。 |
-| `priority` | 钩子的优先级元数据。值必须是 >= 1 的整数；无效值回退到默认优先级 `10`。当前的命令模板按 YAML 中的配置顺序展示钩子，不会按 `priority` 排序。 |
+| `priority` | 钩子的优先级元数据。已注册的钩子条目使用 >= 1 的整数值；从清单（manifest）安装的条目在未声明优先级时默认为 `10`。当前的命令模板按 YAML 中的配置顺序展示钩子，不会按 `priority` 排序。 |
 | `prompt` | 询问是否运行可选钩子时显示的消息。 |
 | `description` | 钩子作用的人类可读说明。 |
 | `condition` | 可选表达式，由 `HookExecutor` 求值（使用 `config.<path>` 或 `env.<VAR>`，配合 `is set`、`==` 或 `!=`）。当前的命令模板不求值条件，会跳过带非空条件的钩子。 |
 钩子事件名标识钩子的触发时机。一般使用 `before_<command>` 或 `after_<command>` 形式，例如 `before_implement`、`after_implement`、`before_tasks` 和 `after_tasks`。
+
+扩展清单在安装期间会拒绝无效的钩子优先级。对于已存在的 `.specify/extensions.yml` 条目，`HookExecutor.get_hooks_for_event()` 借助 `normalize_priority()` 排序：缺失值、布尔值、被 `int()` 拒绝的非数字值，以及小于 `1` 的值都回退到 `10`；数字字符串和有限浮点数会经 `int()` 强制转换，而非有限浮点数（non-finite float）不受支持，可能直接失败而非回退。
 
 `HookExecutor.get_hooks_for_event()` 返回按 `priority` 排序的钩子，数值小的在前。不过，当前的命令模板直接读取钩子列表，按 YAML 中的配置顺序展示，而不使用优先级排序。
 
