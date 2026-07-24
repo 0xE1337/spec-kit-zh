@@ -1,5 +1,5 @@
 <!-- zh-source: extensions/git/README.md -->
-<!-- zh-base: f494a8e -->
+<!-- zh-base: d0a8389 -->
 
 # Git 分支工作流扩展
 
@@ -13,7 +13,7 @@
 - **功能分支创建**，支持顺序编号（`001-feature-name`）或时间戳编号（`20260319-143022-feature-name`），并可为分支命名空间选配模板
 - **分支校验**，确保分支遵循命名约定
 - **Git 远程检测**，用于 GitHub 集成（例如创建 issue）
-- **自动提交**，在核心命令之后执行（可按命令配置开关和自定义消息）
+- **自动提交**，在核心命令之后执行（可按命令配置开关和自定义消息，或由智能体生成 Conventional Commit 消息）
 
 ## 命令
 
@@ -68,6 +68,11 @@ branch_prefix: ""
 
 # git init 的自定义提交消息
 init_commit_message: "[Spec Kit] Initial commit"
+
+# 自动提交钩子的提交消息风格："fixed"（默认）使用下方的消息；
+# "conventional" 则让智能体根据 diff 生成 Conventional Commit 消息
+#（例如 "feat: add OAuth spec"）。
+commit_style: fixed
 
 # 按命令配置自动提交（默认全部停用）
 # 示例：在 specify 之后启用自动提交

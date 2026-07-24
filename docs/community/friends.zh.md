@@ -1,10 +1,10 @@
 <!-- zh-source: docs/community/friends.md -->
-<!-- zh-base: 3f7392a -->
+<!-- zh-base: 7cd97e4 -->
 
 # 社区友邻项目
 
 > [!NOTE]
-> 此处列出的社区项目由各自的作者独立创建和维护。它们**未经 GitHub 审查、背书或支持**。安装前请审查源码，使用风险自行判断。
+> 此处列出的社区项目由各自的作者独立创建和维护。除非明确标注为 **GitHub 官方项目**，否则它们**未经 GitHub 审查、背书或支持**。安装前请审查源码，使用风险自行判断。
 
 扩展、可视化或构建于 Spec Kit 之上的社区项目：
 
@@ -19,3 +19,5 @@
 - **[cc-spec-kit](https://github.com/speckit-community/cc-spec-kit)**——由社区维护的 Claude Code 与 GitHub Copilot CLI 插件，通过插件市场安装 Spec Kit 技能。
 
 - **[spectatui](https://github.com/tinesoft/spectatui)**——一个 Spec Kit 的终端 UI（TUI）仪表盘，可以跟踪功能，管理规范、集成、预设、工作流和扩展，并监控 AI 智能体工作流。可以接入既有 AI 会话，也可以从终端启动新会话。支持键盘和鼠标操作，支持浅色/深色主题，可定制且注重性能。需要 PATH 中有 `specify` CLI。
+
+- **[spec-kit-copilot](https://github.com/github/spec-kit-copilot)**——_GitHub 官方项目。_ 一个 GitHub Copilot **技能插件**，把 Spec Kit 的 `specify` CLI 暴露给 Copilot 智能体，在 Copilot CLI 和 GitHub Copilot 应用中都能使用。它为每个 `specify` 命令组提供一个聚焦的技能——setup、init、check、extensions、presets、bundles、workflows、workflow steps 和 self-upgrade——让你可以通过自然语言浏览并驱动整个 Spec Kit 生态，由 Copilot 决定何时、如何代你运行正确的 `specify` 命令。
