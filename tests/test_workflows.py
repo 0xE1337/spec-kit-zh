@@ -686,6 +686,28 @@ class TestExpressions:
         ):
             evaluate_expression("{{ inputs.tags | map }}", ctx)
 
+    def test_filter_call_with_trailing_tokens_fails_loudly(self):
+        # A trailing operator/token after a filter's closing paren must not be
+        # silently discarded (the parser used an unanchored regex). It must
+        # fall through to the "unsupported form" ValueError, like the from_json
+        # branch's strict trailing-token handling.
+        import pytest
+        from specify_cli.workflows.expressions import evaluate_expression
+        from specify_cli.workflows.base import StepContext
+
+        # A comparison after a filter (binds looser than the pipe) was dropped,
+        # so `default('7') > '5'` silently returned '7'.
+        with pytest.raises(ValueError, match="unsupported form"):
+            evaluate_expression(
+                "{{ inputs.missing | default('7') > '5' }}", StepContext(inputs={})
+            )
+        # Trailing garbage after a valid filter call.
+        with pytest.raises(ValueError, match="unsupported form"):
+            evaluate_expression(
+                "{{ inputs.tags | join(',') extra }}",
+                StepContext(inputs={"tags": ["a", "b"]}),
+            )
+
     def test_chained_filters_apply_left_to_right(self):
         # Filters chain: each filter's result feeds the next. `map` yields a
         # list and `join` is the only filter that renders a list to a string,
@@ -7858,6 +7880,37 @@ class TestWorkflowAddCaseInsensitiveSuffix:
 
         assert result.exit_code == 0, result.output
         assert "installed" in result.output
+
+
+class TestWorkflowInfoStepGraph:
+    """`workflow info` must render each step as `→ <id> [<type>]` with LITERAL
+    brackets. Rich parses an unescaped `[<type>]` as a style tag and silently
+    swallows it, so the step type would vanish from the output."""
+
+    def test_step_type_rendered_in_literal_brackets(self, temp_dir, monkeypatch):
+        import types
+
+        from typer.testing import CliRunner
+        from specify_cli import app
+        from specify_cli.workflows.engine import WorkflowEngine
+
+        (temp_dir / ".specify" / "workflows").mkdir(parents=True)
+
+        fake = types.SimpleNamespace(
+            name="My WF", id="my-wf", version="1.0.0", author="", description="",
+            default_integration=None, inputs={},
+            steps=[{"id": "step-one", "type": "gate"}],
+        )
+        monkeypatch.setattr(WorkflowEngine, "load_workflow", lambda self, wid: fake)
+        monkeypatch.chdir(temp_dir)
+
+        result = CliRunner().invoke(app, ["workflow", "info", "my-wf"])
+
+        assert result.exit_code == 0, result.output
+        assert "step-one" in result.output
+        # The step type must survive as a literal bracketed token, not be eaten
+        # by Rich as an unknown style tag.
+        assert "[gate]" in result.output
 
 
 class TestWorkflowAddSymlinkGuard:
