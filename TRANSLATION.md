@@ -24,25 +24,20 @@
 
 | 命令 | 作用 |
 | --- | --- |
-| `tools/zh/check-stale.sh [--fetch]` | 对比上游，列出所有过期译文及原文改动次数 |
-| `tools/zh/detect.sh` | **只读**检测：定时任务用。检测过期/新增，开或原地刷新单个「待翻清单」issue；已同步则自动关闭该 issue。不翻译、不改仓库 |
+| `tools/zh/check-stale.sh [--fetch]` | 对比上游，列出所有过期译文及原文改动次数（每次同步都用它） |
 | `tools/zh/translate.sh <file.md> [...]` | 用 Claude 按术语表初翻文件，生成同级 `.zh.md`（初翻后必须人工审校） |
-| `tools/zh/translate-patch.sh <file.md>` | 按 git diff 增量更新一个过期译文，保留已定稿内容 |
-| `tools/zh/sync.sh` | 全自动 fetch→merge→翻译→开 PR。仅供**已登录 claude 的本地手动**运行；定时任务不用它（无人值守下 claude 无法认证） |
 
-## 同步机制（B 档半自动）
+## 同步机制（按需触发）
 
-- **检测（自动）**：launchd 每天 10:00 跑只读的 `detect.sh`，有待翻内容就在仓库开一个「待翻清单」issue（复用同一 issue、原地刷新）。plist 见 `tools/zh/com.spec-kit-zh.sync.plist`，日志 `tools/zh/sync.log`。
-- **翻译（人工触发）**：看到「待翻清单」issue，在 Claude Code 会话说一句「同步官方更新」，即按术语表翻译并合并。翻译不走无人值守（claude 认证受限），由会话里可靠地做，保证质量。
+不做定时监控。官方近乎日更，"你落后了"这个信号天天为真、等于没信号；而且自动开的 issue 也送不到通知。所以：**想同步时，在 Claude Code 会话里说一句「官方更新了 / 同步一下」，即拉取对比、翻译、合并、推送。** 落后多少一次补齐——并存式结构保证 `git merge` 永不冲突，落后再多也只是多翻几个文件。
 
 ## 同步纪律（每次同步必须遵守）
 
 1. **流程**：`git fetch upstream` → `git merge upstream/main`（并存式结构，零冲突）→ `check-stale.sh` 列过期 → **同时**扫描范围内的新增未译文件（两者都要，别只看过期）→ 增量补丁过期 + 全量翻译新增 → `check-stale.sh` 必须全绿 → 提交推送。
-2. **过期文件用增量补丁**（`translate-patch.sh` 或按 diff 手改），**不整篇重翻**，保住已定稿/已审校内容。
+2. **过期文件按 git diff 增量修补，不整篇重翻**，保住已定稿/已审校内容。
 3. **改完更新每个译文头的 `zh-base`** 为对应源文件的最新 commit。
-4. **收尾必须关掉对应的「待翻清单」issue**：会话里手动同步后，要么直接关该 issue，要么跑一次 `detect.sh` 让它自动关（`detect.sh` 发现已对齐会自动关闭）。曾因漏关遗留过 open issue。
-5. **README.md 是唯一我们也改的英文文件**（顶部中文入口）；合并后它会产生与上游不同的 commit 哈希，`check-stale.sh` 已特殊处理（0 新改动不误报）。
-6. **绝不修改上游英文文件**（README.md 首行 banner 除外）；任何 `gh` 写操作必须显式 `-R 0xE1337/spec-kit-zh`，避免误发到 upstream。
+4. **README.md 是唯一我们也改的英文文件**（顶部中文入口）；合并后它会产生与上游不同的 commit 哈希，`check-stale.sh` 已特殊处理（0 新改动不误报）。
+5. **绝不修改上游英文文件**（README.md 首行 banner 除外）；任何 `gh` 写操作必须显式 `-R 0xE1337/spec-kit-zh`，避免误发到 upstream。
 
 ## 翻译范围（按优先级）
 
